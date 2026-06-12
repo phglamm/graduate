@@ -22,14 +22,14 @@ import "./index.css";
    ═══════════════════════════════════════════════════════════════ */
 const CONFIG = {
   graduateName: "Lâm Phương",
-  major: "Công nghệ Thông tin",
-  degree: "Kỹ sư",
-  university: "Trường Đại học Kinh Tế Tài Chính TP.HCM ",
-  ceremonyDate: new Date(2025, 6, 26, 9, 0, 0),
+  major: "Losgistics & Quản lý Chuỗi cung ứng",
+  degree: "Cử nhân",
+  university: "Trường Đại học Kinh Tế Tài Chính TP.HCM",
+  ceremonyDate: new Date(2026, 7, 15, 9, 0, 0),
   ceremonyTime: "09:00 SA",
   venue: "Hội trường lớn",
-  venueSub: "Trường Đại học Công nghệ",
-  venueAddress: "268 Lý Thường Kiệt, P.14, Q.10, TP.HCM",
+  venueSub: "Trường Đại học Kinh Tế Tài Chính TP.HCM",
+  venueAddress: "141 - 145 Điện Biên Phủ, P.15, Q.Bình Thạnh",
   photoUrl: "/graduate-photo.png",
   defaultGuestName: "Quý khách",
 };
@@ -202,122 +202,6 @@ function MiniCalendar({ date }) {
             ) : (
               <span className="text-[11px] text-[#7A6A6E]">{c}</span>
             )}
-          </motion.div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ══════════════════════════════════════════════════════════════
-   WISHES
-   ══════════════════════════════════════════════════════════════ */
-function Wishes() {
-  const [list, setList] = useState([
-    {
-      id: 1,
-      name: "Minh Anh",
-      msg: "Chúc mừng tốt nghiệp! Tự hào về bạn! 🎉",
-      time: "2h trước",
-    },
-    {
-      id: 2,
-      name: "Thảo Vy",
-      msg: "Chúc bạn luôn thành công trên con đường phía trước 💕",
-      time: "5h trước",
-    },
-  ]);
-  const [name, setName] = useState("");
-  const [msg, setMsg] = useState("");
-  const [sent, setSent] = useState(false);
-
-  const submit = (e) => {
-    e.preventDefault();
-    if (!name.trim() || !msg.trim()) return;
-    setList((p) => [{ id: Date.now(), name, msg, time: "Vừa xong" }, ...p]);
-    setName("");
-    setMsg("");
-    setSent(true);
-    setTimeout(() => setSent(false), 3000);
-  };
-
-  const initials = (n) =>
-    n
-      .trim()
-      .split(" ")
-      .map((w) => w[0])
-      .slice(-2)
-      .join("")
-      .toUpperCase();
-
-  return (
-    <div className="space-y-3">
-      {/* Form */}
-      <form onSubmit={submit} className="space-y-2.5">
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Tên của bạn"
-          required
-          className="w-full px-4 py-2.5 rounded-xl bg-white border border-[#E8DDD8] text-[13px] text-[#3D2E32] placeholder-[#9E9590] outline-none focus:border-[#C4A0AE] transition-colors"
-        />
-        <textarea
-          value={msg}
-          onChange={(e) => setMsg(e.target.value)}
-          placeholder="Gửi lời chúc..."
-          rows={3}
-          required
-          className="w-full px-4 py-2.5 rounded-xl bg-white border border-[#E8DDD8] text-[13px] text-[#3D2E32] placeholder-[#9E9590] outline-none focus:border-[#C4A0AE] transition-colors resize-none"
-        />
-        <motion.button
-          type="submit"
-          whileHover={{ scale: 1.01 }}
-          whileTap={{ scale: 0.98 }}
-          className="w-full py-3 rounded-xl bg-[#8B5E6B] hover:bg-[#A66560] text-white text-[13px] font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer"
-        >
-          <Send size={14} />
-          Gửi lời chúc
-        </motion.button>
-      </form>
-
-      {/* Success toast */}
-      <AnimatePresence>
-        {sent && (
-          <motion.p
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            className="text-center text-[13px] text-[#C9847E] font-medium"
-          >
-            Đã gửi! Cảm ơn bạn 💗
-          </motion.p>
-        )}
-      </AnimatePresence>
-
-      {/* Wish list */}
-      <div className="space-y-2.5 pt-1">
-        {list.map((w) => (
-          <motion.div
-            key={w.id}
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-white border border-[#E8DDD8] rounded-2xl p-3.5"
-          >
-            <div className="flex items-center gap-2.5 mb-1.5">
-              <div className="w-[30px] h-[30px] rounded-full bg-[#F0E8E2] border border-[#E8DDD8] flex items-center justify-center text-[11px] font-semibold text-[#8B5E6B] shrink-0">
-                {initials(w.name)}
-              </div>
-              <div>
-                <p className="text-[13px] font-medium text-[#3D2E32]">
-                  {w.name}
-                </p>
-                <p className="text-[10px] text-[#9E9590]">{w.time}</p>
-              </div>
-            </div>
-            <p className="text-[12px] text-[#7A6A6E] leading-relaxed pl-[42px]">
-              {w.msg}
-            </p>
           </motion.div>
         ))}
       </div>
@@ -612,20 +496,6 @@ export default function App() {
         </section>
 
         <OrnDivider dots={3} />
-
-        {/* ─── WISHES ──────────────────────────────────── */}
-        <section className="px-5 py-4">
-          <Reveal>
-            <SectionTitle
-              icon={MessageCircleHeart}
-              title="Sổ lưu bút"
-              subtitle={`Gửi lời chúc đến ${CONFIG.graduateName}`}
-            />
-          </Reveal>
-          <Reveal delay={0.1}>
-            <Wishes />
-          </Reveal>
-        </section>
 
         {/* ─── FOOTER ──────────────────────────────────── */}
         <footer className="py-10 px-6 text-center border-t border-[#E8DDD8] mt-4">
