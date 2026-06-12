@@ -1,0 +1,35 @@
+@import url("https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap");
+@import "tailwindcss";
+
+/* ── Những thứ Tailwind không làm được ─────────────────────── */
+
+/* Conic gradient cho photo ring */
+.photo-ring {
+  background: conic-gradient(
+    #c9847e 0deg,
+    #c4a0ae 90deg,
+    #c9847e 180deg,
+    #f0e8e2 270deg,
+    #c9847e 360deg
+  );
+}
+
+/* Calendar grid 7 cột đều nhau */
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+/* Font helpers */
+.font-script {
+  font-family: "Great Vibes", cursive;
+}
+.font-serif {
+  font-family: "Playfair Display", serif;
+}
+
+/* Scrollbar ẩn */
+body {
+  -webkit-font-smoothing: antialiased;
+}
