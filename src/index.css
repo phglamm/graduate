@@ -33,3 +33,27 @@
 body {
   -webkit-font-smoothing: antialiased;
 }
+
+/* ── RSVP ──────────────────────────────────────────────────────── */
+.rsvp-btn {
+  transition: all 0.2s ease;
+}
+.rsvp-btn.active-yes {
+  background-color: #8B5E6B;
+  color: white;
+  border-color: #8B5E6B;
+}
+.rsvp-btn.active-no {
+  background-color: #9E9590;
+  color: white;
+  border-color: #9E9590;
+}
+
+/* ── Admin Dashboard ───────────────────────────────────────────── */
+.pie-chart {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  /* Fallback if conic-gradient is not supported dynamically */
+  background: conic-gradient(#8B5E6B var(--yes-pct, 0%), #E8DDD8 0);
+}

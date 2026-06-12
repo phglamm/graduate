@@ -14,6 +14,13 @@ import {
   MessageCircleHeart,
   ExternalLink,
   Quote,
+  CheckCircle2,
+  XCircle,
+  Loader2,
+  ShieldCheck,
+  Users,
+  RefreshCw,
+  MailOpen,
 } from "lucide-react";
 import "./index.css";
 
@@ -32,11 +39,18 @@ const CONFIG = {
   venueAddress: "141 - 145 Điện Biên Phủ, P.15, Q.Bình Thạnh",
   photoUrl: "/graduate-photo.png",
   defaultGuestName: "Quý khách",
+  GOOGLE_SCRIPT_URL: import.meta.env.VITE_GOOGLE_SCRIPT_URL, // TODO: Thêm URL Google Apps Script vào đây
 };
 
+console.log(CONFIG.GOOGLE_SCRIPT_URL);
 function getGuestName() {
   const p = new URLSearchParams(window.location.search);
   return p.get("to") || CONFIG.defaultGuestName;
+}
+
+function generateToken(name) {
+  // Đơn giản tạo token từ tên để validate
+  return btoa(encodeURIComponent(name)).slice(0, 10);
 }
 
 /* ── Countdown ────────────────────────────────────────────── */
@@ -210,9 +224,318 @@ function MiniCalendar({ date }) {
 }
 
 /* ══════════════════════════════════════════════════════════════
+   RSVP
+   ══════════════════════════════════════════════════════════════ */
+function RSVPSection({ guestName }) {
+  const [name, setName] = useState(
+    guestName === CONFIG.defaultGuestName ? "" : guestName,
+  );
+  const [status, setStatus] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [attendees, setAttendees] = useState([]);
+
+  useEffect(() => {
+    // Lấy danh sách từ server để validate thay vì dùng localStorage
+    const fetchAttendees = async () => {
+      if (!CONFIG.GOOGLE_SCRIPT_URL) return;
+      try {
+        const res = await fetch(CONFIG.GOOGLE_SCRIPT_URL);
+        const json = await res.json();
+        if (json.status === "success") {
+          setAttendees(json.data);
+          // Kiểm tra xem tên hiện tại đã submit chưa
+          const initialName = guestName === CONFIG.defaultGuestName ? "" : guestName;
+          if (initialName) {
+            const existing = json.data.find(
+              (d) => d.name.toLowerCase() === initialName.toLowerCase()
+            );
+            if (existing) {
+              setSubmitted(true);
+              setStatus(existing.status);
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Lỗi lấy danh sách RSVP:", err);
+      }
+    };
+    fetchAttendees();
+  }, [guestName]);
+
+  const isNameExist = useMemo(() => {
+    if (!name.trim()) return false;
+    return attendees.some((d) => d.name.toLowerCase() === name.trim().toLowerCase());
+  }, [name, attendees]);
+
+  const handleSubmit = async () => {
+    if (!name.trim() || !status) return;
+
+    if (!CONFIG.GOOGLE_SCRIPT_URL) {
+      alert("Vui lòng cấu hình GOOGLE_SCRIPT_URL trong App.jsx để gửi RSVP!");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const token = generateToken(name);
+      await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token, name, status }),
+      });
+
+      // Thêm vào danh sách local để validate sau khi submit thành công
+      setAttendees([...attendees, { name: name.trim(), status, timestamp: new Date().toISOString() }]);
+      setSubmitted(true);
+    } catch (err) {
+      alert("Có lỗi xảy ra khi gửi xác nhận. Vui lòng thử lại sau.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (submitted) {
+    return (
+      <section className="px-5 py-4">
+        <Reveal>
+          <div className="bg-[#F0E8E2] border border-[#E8DDD8] rounded-2xl p-6 text-center">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", bounce: 0.5 }}
+              className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-3"
+            >
+              <CheckCircle2 size={24} color="#8B5E6B" />
+            </motion.div>
+            <h3 className="font-serif text-lg font-semibold text-[#3D2E32] mb-1">
+              Cảm ơn bạn!
+            </h3>
+            <p className="text-[13px] text-[#7A6A6E]">
+              Xác nhận của bạn đã được ghi nhận.
+            </p>
+          </div>
+        </Reveal>
+      </section>
+    );
+  }
+
+  return (
+    <section className="px-5 py-4">
+      <Reveal>
+        <SectionTitle
+          icon={MailOpen}
+          title="Xác nhận tham dự"
+          subtitle="Vui lòng phản hồi trước 20/07/2026"
+        />
+      </Reveal>
+      <Reveal delay={0.1}>
+        <div className="bg-white border border-[#E8DDD8] rounded-2xl p-5">
+          <div className="mb-4">
+            <label className="block text-[11px] uppercase tracking-[.15em] text-[#9E9590] font-medium mb-1.5">
+              Tên của bạn
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Nhập tên của bạn..."
+              className="w-full bg-[#FDF8F5] border border-[#E8DDD8] rounded-xl px-4 py-2.5 text-[13px] text-[#3D2E32] focus:outline-none focus:border-[#C4A0AE] transition-colors"
+            />
+            {isNameExist && (
+              <p className="text-[11px] text-[#C9847E] mt-1.5 font-medium">
+                Tên này đã được xác nhận tham dự.
+              </p>
+            )}
+          </div>
+
+          <div className="flex gap-3 mb-5">
+            <button
+              onClick={() => setStatus("Tham dự")}
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border rsvp-btn ${status === "Tham dự" ? "active-yes" : "border-[#E8DDD8] text-[#7A6A6E] hover:bg-[#F0E8E2]"}`}
+            >
+              <CheckCircle2 size={16} />
+              <span className="text-[13px] font-medium">Tham dự</span>
+            </button>
+            <button
+              onClick={() => setStatus("Không tham dự")}
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border rsvp-btn ${status === "Không tham dự" ? "active-no" : "border-[#E8DDD8] text-[#7A6A6E] hover:bg-[#F0E8E2]"}`}
+            >
+              <XCircle size={16} />
+              <span className="text-[13px] font-medium">Không thể đến</span>
+            </button>
+          </div>
+
+          <button
+            onClick={handleSubmit}
+            disabled={!name.trim() || !status || isSubmitting || isNameExist}
+            className="w-full flex items-center justify-center gap-2 bg-[#8B5E6B] text-white py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
+          >
+            {isSubmitting ? (
+              <Loader2 size={16} className="animate-spin" />
+            ) : (
+              <Send size={16} />
+            )}
+            <span className="text-[13px] font-medium uppercase tracking-wider">
+              {isSubmitting ? "Đang gửi..." : "Gửi xác nhận"}
+            </span>
+          </button>
+        </div>
+      </Reveal>
+    </section>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════
+   ADMIN PAGE
+   ══════════════════════════════════════════════════════════════ */
+function AdminPage() {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchData = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      if (!CONFIG.GOOGLE_SCRIPT_URL)
+        throw new Error("Chưa cấu hình GOOGLE_SCRIPT_URL");
+      const res = await fetch(CONFIG.GOOGLE_SCRIPT_URL);
+      const json = await res.json();
+      if (json.status === "success") {
+        setData(json.data.reverse()); // Mới nhất lên đầu
+      } else {
+        throw new Error("Lỗi từ server");
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const total = data.length;
+  const yesCount = data.filter((d) => d.status === "Tham dự").length;
+  const noCount = data.filter((d) => d.status === "Không tham dự").length;
+  const yesPct = total > 0 ? (yesCount / total) * 100 : 0;
+
+  return (
+    <div className="min-h-screen bg-[#FDF8F5] p-5 font-sans">
+      <div className="max-w-md mx-auto">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-2">
+            <ShieldCheck size={24} color="#8B5E6B" />
+            <h1 className="font-serif text-xl font-bold text-[#3D2E32]">
+              Admin Dashboard
+            </h1>
+          </div>
+          <button
+            onClick={fetchData}
+            className="p-2 bg-white rounded-full border border-[#E8DDD8] shadow-sm"
+          >
+            <RefreshCw
+              size={16}
+              color="#7A6A6E"
+              className={loading ? "animate-spin" : ""}
+            />
+          </button>
+        </div>
+
+        {/* Stats */}
+        <div className="bg-white p-5 rounded-2xl border border-[#E8DDD8] shadow-sm mb-6 flex items-center justify-between">
+          <div>
+            <p className="text-[11px] uppercase tracking-widest text-[#9E9590] mb-1">
+              Tổng phản hồi
+            </p>
+            <p className="font-serif text-3xl font-semibold text-[#3D2E32]">
+              {total}
+            </p>
+            <div className="flex gap-3 mt-3 text-[12px]">
+              <div className="flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-[#8B5E6B]"></span> Có:{" "}
+                {yesCount}
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-[#9E9590]"></span>{" "}
+                Không: {noCount}
+              </div>
+            </div>
+          </div>
+          <div
+            className="pie-chart"
+            style={{ "--yes-pct": `${yesPct}%` }}
+          ></div>
+        </div>
+
+        {/* List */}
+        <h2 className="font-serif text-lg font-semibold text-[#3D2E32] mb-3 flex items-center gap-2">
+          <Users size={18} color="#C9847E" /> Danh sách khách mời
+        </h2>
+
+        {loading ? (
+          <div className="text-center py-10">
+            <Loader2
+              size={24}
+              className="animate-spin mx-auto text-[#C9847E]"
+            />
+          </div>
+        ) : error ? (
+          <div className="bg-red-50 text-red-500 p-4 rounded-xl text-sm text-center border border-red-100">
+            {error}
+          </div>
+        ) : data.length === 0 ? (
+          <div className="text-center py-10 text-[#9E9590] text-sm">
+            Chưa có dữ liệu phản hồi.
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {data.map((item, idx) => (
+              <div
+                key={idx}
+                className="bg-white p-4 rounded-xl border border-[#E8DDD8] shadow-sm flex items-center justify-between"
+              >
+                <div>
+                  <p className="font-medium text-[#3D2E32]">{item.name}</p>
+                  <p className="text-[11px] text-[#9E9590] mt-0.5">
+                    {new Date(item.timestamp).toLocaleString("vi-VN")}
+                  </p>
+                </div>
+                <div
+                  className={`px-3 py-1 rounded-full text-[11px] font-medium border ${
+                    item.status === "Tham dự"
+                      ? "bg-[#F0E8E2] text-[#8B5E6B] border-[#E8DDD8]"
+                      : "bg-gray-100 text-gray-500 border-gray-200"
+                  }`}
+                >
+                  {item.status}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════
    MAIN APP
    ══════════════════════════════════════════════════════════════ */
 export default function App() {
+  const p = new URLSearchParams(window.location.search);
+  const isAdmin = p.get("admin") === "true";
+
+  if (isAdmin) {
+    return <AdminPage />;
+  }
+
   const guestName = useMemo(() => getGuestName(), []);
 
   const details = [
@@ -494,6 +817,11 @@ export default function App() {
             </div>
           </Reveal>
         </section>
+
+        <OrnDivider dots={3} />
+
+        {/* ─── RSVP ────────────────────────────────────── */}
+        <RSVPSection guestName={guestName} />
 
         <OrnDivider dots={3} />
 
