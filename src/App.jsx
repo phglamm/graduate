@@ -3,14 +3,12 @@ import { motion, AnimatePresence } from "motion/react";
 import confetti from "canvas-confetti";
 import {
   Crown,
-  GraduationCap,
   MapPin,
   Calendar as CalendarIcon,
   Clock,
   Heart,
   Sparkles,
   Send,
-  ChevronDown,
   ChevronLeft,
   ChevronRight,
   PartyPopper,
@@ -25,6 +23,8 @@ import {
   Share2,
   CalendarPlus,
   Compass,
+  Mail,
+  MailOpen,
 } from "lucide-react";
 
 // ReactBits animated components
@@ -839,6 +839,67 @@ function AdminPage() {
 }
 
 /* ══════════════════════════════════════════════════════════════
+   BÌA THIỆP MỜI TỐI GIẢN & SANG TRỌNG (Minimalist Luxury Cover)
+   ══════════════════════════════════════════════════════════════ */
+function EnvelopeCover({ onOpen, guestName }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.93, y: 15 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 1.05, y: -20 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      className="envelope-screen"
+    >
+      <div className="envelope-card-minimal">
+        {/* Biểu tượng phong bì tròn viền vàng kim thanh thoát */}
+        <motion.div
+          animate={{ scale: [1, 1.05, 1] }}
+          transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+          className="envelope-icon-circle"
+        >
+          <Mail size={32} strokeWidth={0} fill="#8b1d3b" />
+        </motion.div>
+
+        {/* ✦ TRÂN TRỌNG KÍNH MỜI ✦ */}
+        <div className="envelope-invite-heading">
+          <span className="text-[#d4af37]">✦</span>
+          <span>TRÂN TRỌNG KÍNH MỜI</span>
+          <span className="text-[#d4af37]">✦</span>
+        </div>
+
+        {/* Tên khách mời (nếu có từ tham số link) */}
+        {guestName && guestName !== CONFIG.defaultGuestName && (
+          <p className="text-[12.5px] font-extrabold text-[#8b1d3b] tracking-wider uppercase mb-1">
+            {guestName}
+          </p>
+        )}
+
+        {/* Lễ Tốt Nghiệp / Mỹ Vy */}
+        <h1 className="envelope-event-title">Lễ Tốt Nghiệp</h1>
+        <h2 className="envelope-person-name">{CONFIG.graduateName}</h2>
+
+        {/* Nút Mở Thiệp Mời hình viên thuốc đỏ rượu sang trọng */}
+        <div>
+          <motion.button
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={onOpen}
+            className="envelope-open-pill-btn"
+            aria-label="Mở thiệp mời"
+          >
+            <span>Mở Thiệp Mời</span>
+            <Mail size={15} strokeWidth={2.4} />
+          </motion.button>
+        </div>
+
+        {/* Dòng chú thích: chạm để mở thiệp & bật nhạc nền */}
+        <p className="envelope-sub-hint">chạm để mở thiệp &amp; bật nhạc nền</p>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════
    ỨNG DỤNG THIỆP MỜI CHÍNH (100% TIẾNG VIỆT · MOBILE FIRST)
    ══════════════════════════════════════════════════════════════ */
 export default function App() {
@@ -847,14 +908,12 @@ export default function App() {
   if (isAdmin) return <AdminPage />;
 
   const guestName = useMemo(() => getGuestName(), []);
+  const [isOpened, setIsOpened] = useState(false);
 
-  // Bắn pháo hoa chào mừng lúc vừa mở thiệp
-  useEffect(() => {
-    const t = setTimeout(() => {
-      firePrincessConfetti();
-    }, 800);
-    return () => clearTimeout(t);
-  }, []);
+  const handleOpenInvitation = () => {
+    setIsOpened(true);
+    firePrincessConfetti();
+  };
 
   const details = [
     {
@@ -896,170 +955,184 @@ export default function App() {
       {/* Nút phát nhạc chuông chúc mừng */}
       <MusicPlayer src="/cam on mck.mp3" />
 
-      {/* ── THÂN THIỆP MỜI (Mobile First 440px) ────────────────── */}
-      <main className="invitation-card">
-        {/* ── PHẦN 1: BÌA THIỆP & TÂN CỬ NHÂN ──────────────────── */}
-        <section className="invitation-hero">
-          {/* Huy hiệu vương miện */}
-          <motion.div
-            initial={{ opacity: 0, y: -12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45 }}
-            className="hero-crown-badge"
+      {/* Chuyển cảnh giữa Phong Bì Bìa Thư và Toàn Bộ Nội Dung Thiệp */}
+      <AnimatePresence mode="wait">
+        {!isOpened ? (
+          <EnvelopeCover
+            key="envelope-cover"
+            onOpen={handleOpenInvitation}
+            guestName={guestName}
+          />
+        ) : (
+          <motion.main
+            key="invitation-full-content"
+            initial={{ opacity: 0, y: 28, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -28, scale: 0.96 }}
+            transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+            className="invitation-card"
           >
-            <Crown size={14} strokeWidth={2.4} color="#ff2a75" />
-            <ShinyText text="THƯ MỜI TỐT NGHIỆP" speed={3} />
-            <Sparkles size={12} strokeWidth={2.4} color="#ff82b6" />
-          </motion.div>
+            {/* ── PHẦN 1: BÌA THIỆP & TÂN CỬ NHÂN ──────────────────── */}
+            <section className="invitation-hero">
+              {/* Huy hiệu vương miện */}
+              <motion.div
+                initial={{ opacity: 0, y: -12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45 }}
+                className="hero-crown-badge"
+              >
+                <Crown size={14} strokeWidth={2.4} color="#ff2a75" />
+                <ShinyText text="THƯ MỜI TỐT NGHIỆP" speed={3} />
+                <Sparkles size={12} strokeWidth={2.4} color="#ff82b6" />
+              </motion.div>
 
-          {/* Khung ảnh tân cử nhân hào quang xoay */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.92 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{
-              duration: 0.65,
-              delay: 0.1,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-            className="hero-portrait-wrap"
-          >
-            <div className="hero-portrait-halo" />
-            <div className="hero-portrait-frame">
-              <img
-                src={CONFIG.photoUrl}
-                alt={CONFIG.graduateName}
-                className="hero-portrait-img"
-              />
-            </div>
-          </motion.div>
+              {/* Khung ảnh tân cử nhân hào quang xoay */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.92 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  duration: 0.65,
+                  delay: 0.1,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                className="hero-portrait-wrap"
+              >
+                <div className="hero-portrait-frame">
+                  <img
+                    src={CONFIG.photoUrl}
+                    alt={CONFIG.graduateName}
+                    className="hero-portrait-img"
+                  />
+                </div>
+              </motion.div>
 
-          {/* Tên tân cử nhân xuất hiện từ mờ sang nét */}
-          <motion.div
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.25 }}
-            className="flex flex-col items-center px-1"
-          >
-            <BlurText
-              text={CONFIG.graduateName}
-              delay={120}
-              className="hero-name-heading justify-center"
-              animateBy="words"
-              direction="top"
-            />
-            <p className="hero-degree-sub">
-              {CONFIG.degree} · {CONFIG.major}
-            </p>
-            <p className="hero-univ-title">{CONFIG.university}</p>
-          </motion.div>
-        </section>
-
-        {/* ── PHẦN 2: THƯ MỜI KÍNH GỬI KHÁCH QUÝ ───────────────── */}
-        <section className="art-section">
-          <Reveal>
-            <SpotlightCard
-              className="guest-invitation-card"
-              spotlightColor="rgba(255, 96, 159, 0.3)"
-              borderColor="rgba(255, 96, 159, 0.45)"
-            >
-              <ShinyText
-                text="TRÂN TRỌNG KÍNH MỜI"
-                speed={3.5}
-                className="guest-kính-mời"
-              />
-              <div className="flex justify-center my-1">
+              {/* Tên tân cử nhân xuất hiện từ mờ sang nét */}
+              <motion.div
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.55, delay: 0.25 }}
+                className="flex flex-col items-center px-1"
+              >
                 <BlurText
-                  text={guestName}
-                  delay={100}
-                  className="guest-main-name justify-center"
+                  text={CONFIG.graduateName}
+                  delay={120}
+                  className="hero-name-heading justify-center"
                   animateBy="words"
-                  direction="bottom"
+                  direction="top"
                 />
-              </div>
-              <p className="guest-body-text">
-                Đến tham dự buổi Lễ tốt nghiệp và chia vui cùng Mỹ Vy trong ngày
-                trọng đại ghi dấu cột mốc thanh xuân rực rỡ!
-              </p>
-            </SpotlightCard>
-          </Reveal>
+                <p className="hero-degree-sub">
+                  {CONFIG.degree} · {CONFIG.major}
+                </p>
+                <p className="hero-univ-title">{CONFIG.university}</p>
+              </motion.div>
+            </section>
 
-          {/* 4 Nút tiện ích tương tác nhanh */}
-          <Reveal delay={0.08}>
-            <InteractiveActions />
-          </Reveal>
-        </section>
-
-        <Divider />
-
-        {/* ── PHẦN 3: KHOẢNH KHẮC KỶ NIỆM (CAROUSEL) ───────────── */}
-        <section className="art-section">
-          <Reveal>
-            <SectionTitle title="KHOẢNH KHẮC KỶ NIỆM" />
-          </Reveal>
-          <Reveal delay={0.06}>
-            <PhotoCarousel />
-          </Reveal>
-        </section>
-
-        <Divider />
-
-        {/* ── PHẦN 4: ĐẾM NGƯỢC NGÀY LỄ ────────────────────────── */}
-        <section className="art-section">
-          <Reveal>
-            <SectionTitle title="ĐẾM NGƯỢC NGÀY LỄ" />
-          </Reveal>
-          <Reveal delay={0.06}>
-            <Countdown target={CONFIG.ceremonyDate} />
-          </Reveal>
-        </section>
-
-        {/* Lịch tháng 8 */}
-        <section className="art-section pt-0">
-          <Reveal>
-            <MiniCalendar date={CONFIG.ceremonyDate} />
-          </Reveal>
-        </section>
-
-        <Divider />
-
-        {/* ── PHẦN 5: THÔNG TIN BUỔI LỄ & BẢN ĐỒ ───────────────── */}
-        <section className="art-section">
-          <Reveal>
-            <SectionTitle title="THÔNG TIN BUỔI LỄ" />
-          </Reveal>
-          <Reveal delay={0.06}>
-            <SpotlightCard
-              className="info-card-wrap"
-              spotlightColor="rgba(255, 42, 117, 0.18)"
-              borderColor="rgba(255, 96, 159, 0.38)"
-            >
-              {details.map((d, i) => (
-                <motion.div
-                  key={d.label}
-                  initial={{ opacity: 0, x: -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{
-                    delay: i * 0.06,
-                    ease: [0.22, 1, 0.36, 1],
-                    duration: 0.4,
-                  }}
-                  className={`info-row ${
-                    i < details.length - 1 ? "info-row-border" : ""
-                  }`}
+            {/* ── PHẦN 2: THƯ MỜI KÍNH GỬI KHÁCH QUÝ ───────────────── */}
+            <section className="art-section">
+              <Reveal>
+                <SpotlightCard
+                  className="guest-invitation-card"
+                  spotlightColor="rgba(255, 96, 159, 0.3)"
+                  borderColor="rgba(255, 96, 159, 0.45)"
                 >
-                  <div className="info-icon-badge">
-                    <d.icon size={18} strokeWidth={2.2} />
+                  <ShinyText
+                    text="TRÂN TRỌNG KÍNH MỜI"
+                    speed={3.5}
+                    className="guest-kính-mời"
+                  />
+                  <div className="flex justify-center my-1">
+                    <BlurText
+                      text={guestName}
+                      delay={100}
+                      className="guest-main-name justify-center"
+                      animateBy="words"
+                      direction="bottom"
+                    />
                   </div>
-                  <div className="info-text-container">
-                    <p className="info-label">{d.label}</p>
-                    <p className="info-value">{d.value}</p>
-                    {d.sub && <p className="info-sub">{d.sub}</p>}
-                  </div>
-                </motion.div>
-              ))}
-            </SpotlightCard>
-          </Reveal>
+                  <p className="guest-body-text">
+                    Đến tham dự buổi Lễ tốt nghiệp và chia vui cùng Mỹ Vy trong ngày
+                    trọng đại ghi dấu cột mốc thanh xuân rực rỡ!
+                  </p>
+                </SpotlightCard>
+              </Reveal>
+
+              {/* 4 Nút tiện ích tương tác nhanh */}
+              <Reveal delay={0.08}>
+                <InteractiveActions />
+              </Reveal>
+            </section>
+
+            <Divider />
+
+            {/* ── PHẦN 3: KHOẢNH KHẮC KỶ NIỆM (CAROUSEL) ───────────── */}
+            <section className="art-section">
+              <Reveal>
+                <SectionTitle title="KHOẢNH KHẮC KỶ NIỆM" />
+              </Reveal>
+              <Reveal delay={0.06}>
+                <PhotoCarousel />
+              </Reveal>
+            </section>
+
+            <Divider />
+
+            {/* ── PHẦN 4: ĐẾM NGƯỢC NGÀY LỄ ────────────────────────── */}
+            <section className="art-section">
+              <Reveal>
+                <SectionTitle title="ĐẾM NGƯỢC NGÀY LỄ" />
+              </Reveal>
+              <Reveal delay={0.06}>
+                <Countdown target={CONFIG.ceremonyDate} />
+              </Reveal>
+            </section>
+
+            {/* Lịch tháng 8 */}
+            <section className="art-section pt-0">
+              <Reveal>
+                <MiniCalendar date={CONFIG.ceremonyDate} />
+              </Reveal>
+            </section>
+
+            <Divider />
+
+            {/* ── PHẦN 5: THÔNG TIN BUỔI LỄ & BẢN ĐỒ ───────────────── */}
+            <section className="art-section">
+              <Reveal>
+                <SectionTitle title="THÔNG TIN BUỔI LỄ" />
+              </Reveal>
+              <Reveal delay={0.06}>
+                <SpotlightCard
+                  className="info-card-wrap"
+                  spotlightColor="rgba(255, 42, 117, 0.18)"
+                  borderColor="rgba(255, 96, 159, 0.38)"
+                >
+                  {details.map((d, i) => (
+                    <motion.div
+                      key={d.label}
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{
+                        delay: i * 0.06,
+                        ease: [0.22, 1, 0.36, 1],
+                        duration: 0.4,
+                      }}
+                      className={`info-row ${
+                        i < details.length - 1 ? "info-row-border" : ""
+                      }`}
+                    >
+                      <div className="info-icon-badge">
+                        <d.icon size={18} strokeWidth={2.2} />
+                      </div>
+                      <div className="info-text-container">
+                        <p className="info-label">{d.label}</p>
+                        <p className="info-value">{d.value}</p>
+                        {d.sub && <p className="info-sub">{d.sub}</p>}
+                      </div>
+                    </motion.div>
+                  ))}
+                </SpotlightCard>
+              </Reveal>
 
           {/* Nút mở chỉ đường Google Maps */}
           <Reveal delay={0.1}>
@@ -1129,16 +1202,18 @@ export default function App() {
           </motion.div>
         </footer>
 
-        {/* Nút nổi bắn pháo hoa góc màn hình */}
-        <button
-          onClick={firePrincessConfetti}
-          className="floating-celebrate-btn"
-          aria-label="Bắn pháo hoa chúc mừng"
-        >
-          <Sparkles size={17} />
-          <span>Chúc mừng</span>
-        </button>
-      </main>
-    </div>
-  );
+          {/* Nút nổi bắn pháo hoa góc màn hình */}
+          <button
+            onClick={firePrincessConfetti}
+            className="floating-celebrate-btn"
+            aria-label="Bắn pháo hoa chúc mừng"
+          >
+            <Sparkles size={17} />
+            <span>Chúc mừng</span>
+          </button>
+        </motion.main>
+      )}
+    </AnimatePresence>
+  </div>
+);
 }
