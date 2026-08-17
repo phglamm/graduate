@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import confetti from "canvas-confetti";
 import {
+  Crown,
   GraduationCap,
   MapPin,
   Calendar as CalendarIcon,
@@ -24,23 +25,34 @@ import {
   Share2,
   CalendarPlus,
   Compass,
-  Shirt,
 } from "lucide-react";
+
+// ReactBits animated components
+import ShinyText from "./components/reactbits/ShinyText";
+import SpotlightCard from "./components/reactbits/SpotlightCard";
+import StarBorder from "./components/reactbits/StarBorder";
+import BlurText from "./components/reactbits/BlurText";
+import ClickSpark from "./components/reactbits/ClickSpark";
+
+// Trình phát nhạc chuông chúc mừng
+import MusicPlayer from "./components/MusicPlayer";
+
 import "./index.css";
 
 /* ═══════════════════════════════════════════════════════════════
-   CONFIG
+   CẤU HÌNH THÔNG TIN THIỆP MỜI (100% TIẾNG VIỆT)
    ═══════════════════════════════════════════════════════════════ */
 const CONFIG = {
   graduateName: "Trịnh Thị Mỹ Vy",
   major: "Logistics & Quản lý Chuỗi cung ứng",
   degree: "Cử nhân",
-  university: "Trường Đại học Kinh Tế Tài Chính TP.HCM",
-  ceremonyDate: new Date(2026, 7, 27, 13, 0, 0), // 27/08/2026 13:00
+  university: "Trường Đại học Kinh Tế - Tài Chính TP.HCM (UEF)",
+  ceremonyDate: new Date(2026, 7, 27, 13, 0, 0), // 27/08/2026 lúc 13:00
   ceremonyTime: "13:00 (1 giờ chiều)",
+  ceremonyDayText: "Thứ Năm, 27 tháng 8 năm 2026",
   venue: "Hội trường lớn",
-  venueSub: "Trường ĐH Kinh Tế - Tài Chính TP.HCM (UEF)",
-  venueAddress: "141 - 145 Điện Biên Phủ, Phường 15, Quận Bình Thạnh, TP.HCM",
+  venueSub: "Trường ĐH Kinh Tế - Tài Chính TP.HCM",
+  venueAddress: "141 - 145 Điện Biên Phủ, P.15, Q.Bình Thạnh, TP.HCM",
   photoUrl: "/portrait.png",
   defaultGuestName: "Quý khách",
   GOOGLE_SCRIPT_URL: import.meta.env.VITE_GOOGLE_SCRIPT_URL,
@@ -55,7 +67,7 @@ function generateToken(name) {
   return btoa(encodeURIComponent(name)).slice(0, 10);
 }
 
-/* ── Countdown calculation ────────────────────────────────────── */
+/* ── Tính toán thời gian đếm ngược ────────────────────────────── */
 function calcDiff(target) {
   const d = Math.max(0, target - Date.now());
   return {
@@ -66,37 +78,133 @@ function calcDiff(target) {
   };
 }
 
-/* ── Confetti Celebration Trigger ─────────────────────────────── */
-function fireCelebrationConfetti() {
+/* ── Hiệu ứng Bắn Pháo Hoa Công Chúa ─────────────────────────── */
+function firePrincessConfetti() {
   confetti({
-    particleCount: 80,
-    spread: 70,
+    particleCount: 85,
+    spread: 75,
     origin: { y: 0.6 },
-    colors: ["#c5a059", "#b75d4e", "#dfba73", "#f7eedd", "#e07a5f"],
+    colors: ["#ff2a75", "#ff609f", "#ffcf56", "#c084fc", "#ffffff"],
     shapes: ["circle", "square"],
-    ticks: 200,
+    ticks: 220,
   });
 
   setTimeout(() => {
     confetti({
-      particleCount: 50,
+      particleCount: 55,
       angle: 60,
-      spread: 55,
+      spread: 60,
       origin: { x: 0, y: 0.7 },
-      colors: ["#c5a059", "#b75d4e", "#f3e9df"],
+      colors: ["#ff2a75", "#ff609f", "#ffd8eb", "#ffcf56"],
     });
     confetti({
-      particleCount: 50,
+      particleCount: 55,
       angle: 120,
-      spread: 55,
+      spread: 60,
       origin: { x: 1, y: 0.7 },
-      colors: ["#c5a059", "#b75d4e", "#f3e9df"],
+      colors: ["#ff2a75", "#ff609f", "#ffd8eb", "#ffcf56"],
     });
   }, 250);
 }
 
 /* ══════════════════════════════════════════════════════════════
-   PHOTO CAROUSEL (Lucide arrows, smooth swipe)
+   BONG BÓNG NGŨ SẮC BAY LƠ LỬNG
+   ══════════════════════════════════════════════════════════════ */
+const BUBBLE_PRESETS = [
+  { id: 1, left: "8%", size: 26, dur: "11s", delay: "0s" },
+  { id: 2, left: "22%", size: 42, dur: "14s", delay: "2.5s" },
+  { id: 3, left: "48%", size: 20, dur: "9s", delay: "1s" },
+  { id: 4, left: "68%", size: 36, dur: "13s", delay: "4s" },
+  { id: 5, left: "85%", size: 28, dur: "10s", delay: "1.5s" },
+  { id: 6, left: "35%", size: 32, dur: "15s", delay: "6s" },
+  { id: 7, left: "75%", size: 48, dur: "16s", delay: "8s" },
+];
+
+function PrincessBubbles() {
+  const popBubble = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    confetti({
+      particleCount: 16,
+      spread: 360,
+      startVelocity: 8,
+      origin: {
+        x: (rect.left + rect.width / 2) / window.innerWidth,
+        y: (rect.top + rect.height / 2) / window.innerHeight,
+      },
+      colors: ["#ff2a75", "#ff82b6", "#ffcf56", "#ffffff"],
+      ticks: 80,
+    });
+  };
+
+  return (
+    <div
+      aria-hidden="true"
+      style={{
+        position: "fixed",
+        inset: 0,
+        pointerEvents: "none",
+        zIndex: 1,
+        overflow: "hidden",
+      }}
+    >
+      {BUBBLE_PRESETS.map((b) => (
+        <div
+          key={b.id}
+          className="iridescent-bubble"
+          onClick={popBubble}
+          style={{
+            left: b.left,
+            width: b.size,
+            height: b.size,
+            "--rise-dur": b.dur,
+            "--rise-delay": b.delay,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TIÊU ĐỀ PHÂN MỤC NGHỆ THUẬT (100% TIẾNG VIỆT)
+   ══════════════════════════════════════════════════════════════ */
+function SectionTitle({ title }) {
+  return (
+    <div className="section-art-title">
+      <div className="section-title-badge">
+        <Sparkles size={14} color="#ff2a75" strokeWidth={2.4} />
+        <span>{title}</span>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════
+   ĐƯỜNG PHÂN CÁCH ÁNH HỒNG
+   ══════════════════════════════════════════════════════════════ */
+function Divider() {
+  return <div className="art-divider" />;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   HIỆU ỨNG CUỘN TRANG MƯỢT MÀ
+   ══════════════════════════════════════════════════════════════ */
+function Reveal({ children, delay = 0, className = "" }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-15px" }}
+      transition={{ duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════
+   KHOẢNH KHẮC KỶ NIỆM (Photo Carousel)
    ══════════════════════════════════════════════════════════════ */
 const PHOTOS = [
   { src: "/portrait.png", caption: "Trịnh Thị Mỹ Vy" },
@@ -120,16 +228,16 @@ function PhotoCarousel() {
   }, [isHovered, current]);
 
   return (
-    <section
-      className="carousel-section"
+    <div
+      className="relative"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="carousel-track-wrap">
+      <div className="carousel-wrap">
         <AnimatePresence mode="wait">
           <motion.div
             key={current}
-            initial={{ opacity: 0, scale: 1.03 }}
+            initial={{ opacity: 0, scale: 1.04 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
@@ -140,92 +248,62 @@ function PhotoCarousel() {
               if (info.offset.x < -35) next();
               else if (info.offset.x > 35) prev();
             }}
-            className="carousel-slide"
+            className="absolute inset-0 w-full h-full touch-pan-y"
             style={{ cursor: "grab" }}
           >
             <img
               src={PHOTOS[current].src}
               alt={PHOTOS[current].caption}
-              className="carousel-img"
+              className="carousel-slide-img"
               draggable={false}
             />
-            <div className="carousel-overlay" />
-            <div className="carousel-badge">
-              {PHOTOS[current].caption} · {current + 1}/{count}
+            <div className="carousel-caption-pill flex items-center gap-1.5">
+              <Sparkles size={13} color="#ff2a75" />
+              <span>
+                {PHOTOS[current].caption} · {current + 1}/{count}
+              </span>
             </div>
           </motion.div>
         </AnimatePresence>
 
-        {/* Prev / Next Lucide Arrows */}
+        {/* Nút lật ảnh trái / phải */}
         <button
-          className="carousel-arrow carousel-arrow-left"
+          className="carousel-nav-btn left-3"
           onClick={prev}
           aria-label="Ảnh trước"
         >
-          <ChevronLeft size={18} strokeWidth={2.2} />
+          <ChevronLeft size={20} strokeWidth={2.4} />
         </button>
         <button
-          className="carousel-arrow carousel-arrow-right"
+          className="carousel-nav-btn right-3"
           onClick={next}
           aria-label="Ảnh sau"
         >
-          <ChevronRight size={18} strokeWidth={2.2} />
+          <ChevronRight size={20} strokeWidth={2.4} />
         </button>
       </div>
 
-      {/* Dot indicators */}
-      <div className="carousel-dots">
+      {/* Dải chấm tròn chỉ vị trí ảnh */}
+      <div className="flex justify-center items-center gap-1.5 py-3">
         {PHOTOS.map((_, i) => (
           <button
             key={i}
             onClick={() => setCurrent(i)}
-            className={`carousel-dot ${i === current ? "carousel-dot-active" : ""}`}
-            aria-label={`Ảnh ${i + 1}`}
+            className={`transition-all duration-200 ${
+              i === current
+                ? "w-6 h-2 rounded-full bg-gradient-to-r from-[#ff2a75] to-[#ff609f]"
+                : "w-2 h-2 rounded-full bg-[#ffb0d1]"
+            }`}
+            aria-label={`Xem ảnh ${i + 1}`}
           />
         ))}
       </div>
-    </section>
-  );
-}
-
-/* ══════════════════════════════════════════════════════════════
-   SCROLL REVEAL WRAPPER
-   ══════════════════════════════════════════════════════════════ */
-function Reveal({ children, delay = 0, className = "" }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 18 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-20px" }}
-      transition={{ duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-/* ══════════════════════════════════════════════════════════════
-   SECTION TITLE
-   ══════════════════════════════════════════════════════════════ */
-function SectionTitle({ title, subtitle }) {
-  return (
-    <div className="mb-4">
-      <p className="section-label">{subtitle || "—"}</p>
-      <h2 className="section-heading">{title}</h2>
     </div>
   );
 }
 
 /* ══════════════════════════════════════════════════════════════
-   THIN DIVIDER
-   ══════════════════════════════════════════════════════════════ */
-function Divider() {
-  return <div className="divider" />;
-}
-
-/* ══════════════════════════════════════════════════════════════
-   COUNTDOWN
+   HỘP ĐẾM NGƯỢC (Countdown)
    ══════════════════════════════════════════════════════════════ */
 function Countdown({ target }) {
   const [t, setT] = useState(calcDiff(target));
@@ -254,7 +332,7 @@ function Countdown({ target }) {
             ease: [0.22, 1, 0.36, 1],
             duration: 0.4,
           }}
-          className="cd-card"
+          className="countdown-box"
         >
           <AnimatePresence mode="popLayout">
             <motion.span
@@ -263,12 +341,12 @@ function Countdown({ target }) {
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 6, opacity: 0 }}
               transition={{ duration: 0.18 }}
-              className="cd-num"
+              className="countdown-number"
             >
               {String(it.v).padStart(2, "0")}
             </motion.span>
           </AnimatePresence>
-          <span className="cd-label">{it.l}</span>
+          <span className="countdown-unit">{it.l}</span>
         </motion.div>
       ))}
     </div>
@@ -276,7 +354,7 @@ function Countdown({ target }) {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   MINI CALENDAR
+   LỊCH SỰ KIỆN THÁNG 8 NĂM 2026 (Mini Calendar)
    ══════════════════════════════════════════════════════════════ */
 function MiniCalendar({ date }) {
   const year = date.getFullYear();
@@ -304,42 +382,61 @@ function MiniCalendar({ date }) {
   for (let d = 1; d <= total; d++) cells.push(d);
 
   return (
-    <div style={{ maxWidth: 280, margin: "0 auto" }}>
-      <p className="cal-month">
-        {months[month]} {year}
-      </p>
-      <div className="cal-grid mb-1">
-        {labels.map((l) => (
-          <div key={l} className="cal-head">
+    <div className="calendar-card">
+      <div className="calendar-header-title">
+        <CalendarIcon size={15} strokeWidth={2.4} color="#ff2a75" />
+        <span>
+          {months[month]} Năm {year}
+        </span>
+      </div>
+
+      <div className="calendar-grid-row mb-1.5">
+        {labels.map((l, i) => (
+          <div
+            key={l}
+            className={`calendar-weekday-cell ${i === 0 ? "calendar-weekday-sun" : ""}`}
+          >
             {l}
           </div>
         ))}
       </div>
-      <div className="cal-grid">
+
+      <div className="calendar-grid-row">
         {cells.map((c, i) => (
-          <motion.div
+          <div
             key={i}
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.005 }}
-            className={`cal-cell-wrap ${c === null ? "invisible" : ""}`}
+            className={`flex items-center justify-center ${c === null ? "invisible" : ""}`}
           >
-            <span className={c === day ? "cal-active" : "cal-day"}>{c}</span>
-          </motion.div>
+            {c !== null && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.006 }}
+                className={`calendar-day-cell ${c === day ? "calendar-active-day" : ""}`}
+              >
+                {c}
+              </motion.div>
+            )}
+          </div>
         ))}
+      </div>
+
+      <div className="calendar-footer-note flex items-center justify-center gap-1.5">
+        <Sparkles size={13} color="#ff2a75" />
+        <span>Ngày 27/08 — Lễ trao bằng tốt nghiệp cử nhân</span>
       </div>
     </div>
   );
 }
 
 /* ══════════════════════════════════════════════════════════════
-   INTERACTIVE WISHES & CELEBRATION (All Lucide Icons)
+   THANH TIỆN ÍCH TƯƠNG TÁC (Gửi Tim · Lịch · Pháo Hoa · Chia Sẻ)
    ══════════════════════════════════════════════════════════════ */
 function InteractiveActions() {
   const [likes, setLikes] = useState(() => {
     const saved = localStorage.getItem("myvy_grad_likes");
-    return saved ? parseInt(saved, 10) : 68;
+    return saved ? parseInt(saved, 10) : 99;
   });
   const [floatingHearts, setFloatingHearts] = useState([]);
   const [toast, setToast] = useState("");
@@ -354,33 +451,28 @@ function InteractiveActions() {
     setLikes(nextCount);
     localStorage.setItem("myvy_grad_likes", nextCount.toString());
 
-    // Spawn floating heart particle using Lucide Heart
+    // Sinh hạt tim bay
     const rect = e.currentTarget.getBoundingClientRect();
     const id = Date.now() + Math.random();
     const heart = {
       id,
-      x: rect.left + rect.width / 2 - 9 + (Math.random() * 26 - 13),
+      x: rect.left + rect.width / 2 - 10 + (Math.random() * 26 - 13),
       y: rect.top,
     };
     setFloatingHearts((prev) => [...prev, heart]);
     setTimeout(() => {
       setFloatingHearts((prev) => prev.filter((h) => h.id !== id));
-    }, 1200);
+    }, 1300);
 
     if (nextCount % 5 === 0) {
-      confetti({
-        particleCount: 25,
-        spread: 40,
-        origin: { y: 0.8 },
-        colors: ["#b75d4e", "#c5a059", "#dfba73"],
-      });
+      firePrincessConfetti();
     }
   };
 
   const handleShare = async () => {
     const shareData = {
       title: "Thư mời Lễ tốt nghiệp — Trịnh Thị Mỹ Vy",
-      text: "Trân trọng kính mời bạn đến tham dự Lễ tốt nghiệp của Trịnh Thị Mỹ Vy vào ngày 27/08/2026 lúc 13:00!",
+      text: "Trân trọng kính mời bạn đến tham dự Lễ tốt nghiệp cử nhân của Trịnh Thị Mỹ Vy vào ngày 27/08/2026 lúc 13:00!",
       url: window.location.href,
     };
     if (navigator.share) {
@@ -400,7 +492,7 @@ function InteractiveActions() {
   const handleAddToCalendar = () => {
     const title = encodeURIComponent("Lễ Tốt Nghiệp — Trịnh Thị Mỹ Vy");
     const details = encodeURIComponent(
-      "Lễ Trao Bằng Tốt Nghiệp Cử nhân Logistics & Quản lý Chuỗi cung ứng — Trịnh Thị Mỹ Vy tại UEF Hội trường lớn.",
+      "Lễ Trao Bằng Tốt Nghiệp Cử nhân Logistics & Quản lý Chuỗi cung ứng — Trịnh Thị Mỹ Vy tại Hội trường lớn UEF.",
     );
     const location = encodeURIComponent(CONFIG.venueAddress);
     const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=20260827T060000Z/20260827T090000Z&details=${details}&location=${location}`;
@@ -409,46 +501,46 @@ function InteractiveActions() {
 
   return (
     <>
-      <div className="action-grid">
-        <button onClick={handleSendHeart} className="action-card-btn">
-          <Heart size={15} color="#b75d4e" fill="#b75d4e" strokeWidth={0} />
+      <div className="quick-action-grid">
+        <button onClick={handleSendHeart} className="action-pill-btn">
+          <Heart size={16} color="#ff2a75" fill="#ff2a75" strokeWidth={0} />
           <span>Gửi tim ({likes})</span>
         </button>
 
-        <button onClick={handleAddToCalendar} className="action-card-btn">
-          <CalendarPlus size={15} color="#c5a059" strokeWidth={2} />
+        <button onClick={handleAddToCalendar} className="action-pill-btn">
+          <CalendarPlus size={16} color="#ff2a75" strokeWidth={2.2} />
           <span>Lưu vào Lịch</span>
         </button>
 
         <button
           onClick={() => {
-            fireCelebrationConfetti();
+            firePrincessConfetti();
             showToast("Chúc mừng Tân Cử Nhân Trịnh Thị Mỹ Vy!");
           }}
-          className="action-card-btn btn-celebrate"
+          className="action-pill-btn action-pill-highlight"
         >
-          <PartyPopper size={15} color="#b75d4e" strokeWidth={2} />
+          <PartyPopper size={16} color="#ff2a75" strokeWidth={2.2} />
           <span>Bắn pháo hoa</span>
         </button>
 
-        <button onClick={handleShare} className="action-card-btn">
-          <Share2 size={15} color="#6c5b54" strokeWidth={2} />
+        <button onClick={handleShare} className="action-pill-btn">
+          <Share2 size={16} color="#ff2a75" strokeWidth={2.2} />
           <span>Chia sẻ thiệp</span>
         </button>
       </div>
 
-      {/* Floating hearts rendered in fixed position using Lucide Heart */}
+      {/* Hạt tim bay lên màn hình */}
       {floatingHearts.map((h) => (
         <div
           key={h.id}
-          className="floating-heart"
+          className="floating-heart-anim"
           style={{ left: h.x, top: h.y }}
         >
-          <Heart size={18} fill="#b75d4e" color="#b75d4e" strokeWidth={0} />
+          <Heart size={22} fill="#ff2a75" color="#ff2a75" strokeWidth={0} />
         </div>
       ))}
 
-      {/* Toast Notice */}
+      {/* Thông báo Toast */}
       <AnimatePresence>
         {toast && (
           <motion.div
@@ -457,7 +549,7 @@ function InteractiveActions() {
             exit={{ opacity: 0, y: -20 }}
             className="toast-notice"
           >
-            <Sparkles size={15} color="#dfba73" />
+            <Sparkles size={16} color="#ffcf56" />
             <span>{toast}</span>
           </motion.div>
         )}
@@ -467,7 +559,7 @@ function InteractiveActions() {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   RSVP SECTION
+   XÁC NHẬN THAM DỰ (RSVP — 100% Tiếng Việt)
    ══════════════════════════════════════════════════════════════ */
 function RSVPSection({ guestName }) {
   const [name, setName] = useState(
@@ -512,7 +604,7 @@ function RSVPSection({ guestName }) {
   const handleSubmit = async () => {
     if (!name.trim() || !status) return;
     if (!CONFIG.GOOGLE_SCRIPT_URL) {
-      alert("Chưa cấu hình GOOGLE_SCRIPT_URL!");
+      alert("Chưa cấu hình liên kết nhận dữ liệu!");
       return;
     }
     setIsSubmitting(true);
@@ -528,7 +620,7 @@ function RSVPSection({ guestName }) {
         { name: name.trim(), status, timestamp: new Date().toISOString() },
       ]);
       setSubmitted(true);
-      fireCelebrationConfetti();
+      firePrincessConfetti();
     } catch {
       alert("Có lỗi xảy ra. Vui lòng thử lại!");
     } finally {
@@ -538,21 +630,23 @@ function RSVPSection({ guestName }) {
 
   if (submitted) {
     return (
-      <section className="section">
+      <section className="art-section">
         <Reveal>
-          <div className="card text-center py-8">
+          <div className="guest-invitation-card py-8">
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              transition={{ type: "spring", bounce: 0.45 }}
-              className="rsvp-ok-icon"
+              transition={{ type: "spring", bounce: 0.55 }}
+              className="w-14 h-14 rounded-full bg-[#fff0f6] border-2 border-[#ff2a75] flex items-center justify-center mx-auto mb-3 text-[#ff2a75] shadow-md"
             >
-              <CheckCircle2 size={28} strokeWidth={2} />
+              <CheckCircle2 size={30} strokeWidth={2.4} />
             </motion.div>
-            <p className="rsvp-ok-title">Đã xác nhận thành công!</p>
-            <p className="rsvp-ok-sub">
-              Cảm ơn <strong>{name || guestName}</strong> đã phản hồi. Rất mong
-              được đón tiếp bạn tại buổi lễ!
+            <h3 className="font-extrabold text-xl text-[#e01058] mb-1">
+              Đã Nhận Phản Hồi!
+            </h3>
+            <p className="text-xs text-[#521d37] font-medium max-w-[280px] mx-auto leading-relaxed">
+              Cảm ơn <strong>{name || guestName}</strong> đã gửi phản hồi. Rất
+              mong được đón tiếp bạn trong ngày lễ tốt nghiệp!
             </p>
           </div>
         </Reveal>
@@ -561,68 +655,78 @@ function RSVPSection({ guestName }) {
   }
 
   return (
-    <section className="section">
+    <section className="art-section">
       <Reveal>
-        <SectionTitle title="Xác nhận tham dự" subtitle="RSVP" />
+        <SectionTitle title="XÁC NHẬN THAM DỰ" />
       </Reveal>
       <Reveal delay={0.06}>
-        <div className="card">
-          {/* Name input */}
+        <StarBorder color="#ff2a75" speed="4.5s">
+          {/* Ô nhập tên */}
           <div className="mb-4">
-            <label className="input-label">Tên của bạn</label>
+            <label className="block text-[10px] font-extrabold tracking-wider uppercase text-[#b86f94] mb-1.5">
+              Tên của bạn
+            </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Nhập tên của bạn..."
+              placeholder="Nhập họ và tên của bạn..."
               className="modern-input"
             />
             {isNameExist && (
-              <p className="input-hint">
+              <p className="text-[11px] font-bold text-[#ff2a75] mt-1.5">
                 Tên này đã có trong danh sách xác nhận.
               </p>
             )}
           </div>
 
-          {/* Status buttons */}
+          {/* Nút chọn tham dự */}
           <div className="flex gap-2.5 mb-5">
             <button
               onClick={() => setStatus("Tham dự")}
-              className={`rsvp-btn ${status === "Tham dự" ? "rsvp-yes" : "rsvp-idle"}`}
+              className={`rsvp-option-btn ${
+                status === "Tham dự" ? "rsvp-option-yes" : "rsvp-option-idle"
+              }`}
             >
-              <CheckCircle2 size={15} strokeWidth={2} />
-              Sẽ tham dự
+              <CheckCircle2 size={16} strokeWidth={2.2} />
+              <span>Sẽ tham dự</span>
             </button>
             <button
               onClick={() => setStatus("Không tham dự")}
-              className={`rsvp-btn ${status === "Không tham dự" ? "rsvp-no" : "rsvp-idle"}`}
+              className={`rsvp-option-btn ${
+                status === "Không tham dự"
+                  ? "rsvp-option-no"
+                  : "rsvp-option-idle"
+              }`}
             >
-              <XCircle size={15} strokeWidth={2} />
-              Bận, không thể đến
+              <XCircle size={16} strokeWidth={2.2} />
+              <span>Bận, không đến</span>
             </button>
           </div>
 
-          {/* Submit */}
+          {/* Nút gửi */}
           <button
             onClick={handleSubmit}
             disabled={!name.trim() || !status || isSubmitting || isNameExist}
-            className="submit-btn"
+            className="rsvp-submit-btn"
           >
             {isSubmitting ? (
-              <Loader2 size={16} className="animate-spin" />
+              <Loader2 size={18} className="animate-spin" />
             ) : (
-              <Send size={16} strokeWidth={2} />
+              <Send size={18} strokeWidth={2.2} />
             )}
-            {isSubmitting ? "Đang gửi thông tin..." : "Gửi xác nhận tham dự"}
+            <span>
+              {isSubmitting ? "Đang gửi phản hồi..." : "Gửi xác nhận tham dự"}
+            </span>
           </button>
-        </div>
+        </StarBorder>
       </Reveal>
     </section>
   );
 }
 
 /* ══════════════════════════════════════════════════════════════
-   ADMIN DASHBOARD
+   TRANG QUẢN TRỊ ADMIN (100% Tiếng Việt)
    ══════════════════════════════════════════════════════════════ */
 function AdminPage() {
   const [data, setData] = useState([]);
@@ -638,7 +742,7 @@ function AdminPage() {
       const res = await fetch(CONFIG.GOOGLE_SCRIPT_URL);
       const json = await res.json();
       if (json.status === "success") setData(json.data.reverse());
-      else throw new Error("Lỗi phản hồi từ server");
+      else throw new Error("Lỗi phản hồi từ máy chủ");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -660,13 +764,13 @@ function AdminPage() {
       <div className="admin-inner">
         <div className="admin-header">
           <div className="flex items-center gap-2">
-            <ShieldCheck size={22} strokeWidth={2} color="#dfba73" />
-            <h1 className="admin-title">Admin Dashboard</h1>
+            <ShieldCheck size={22} strokeWidth={2} color="#ff82b6" />
+            <h1 className="admin-title">Bảng Quản Trị Khách Mời</h1>
           </div>
           <button
             onClick={fetchData}
             className="admin-refresh"
-            aria-label="Tải lại"
+            aria-label="Tải lại danh sách"
           >
             <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
           </button>
@@ -674,33 +778,37 @@ function AdminPage() {
 
         <div className="admin-card flex items-center justify-between mb-5 p-5">
           <div>
-            <p className="stat-label">Tổng phản hồi</p>
-            <p className="stat-num">{total}</p>
-            <div className="flex gap-4 mt-2 text-[12px]">
-              <span className="stat-yes flex items-center gap-1">
-                <CheckCircle2 size={13} /> Tham dự: {yesCount}
+            <p className="text-[10px] font-extrabold uppercase tracking-wider text-[#ff82b6] mb-1">
+              Tổng số phản hồi
+            </p>
+            <p className="font-extrabold text-4xl text-white">{total}</p>
+            <div className="flex gap-4 mt-2 text-xs font-bold">
+              <span className="text-[#ff82b6] flex items-center gap-1">
+                <CheckCircle2 size={13} /> Sẽ tham dự: {yesCount}
               </span>
-              <span className="stat-no flex items-center gap-1">
-                <XCircle size={13} /> Không: {noCount}
+              <span className="text-[#b86f94] flex items-center gap-1">
+                <XCircle size={13} /> Bận: {noCount}
               </span>
             </div>
           </div>
           <div className="pie-chart" style={{ "--yes-pct": `${yesPct}%` }} />
         </div>
 
-        <h2 className="admin-list-title">
-          <Users size={16} color="#dfba73" strokeWidth={2} /> Danh sách khách
-          mời
+        <h2 className="flex items-center gap-2 font-extrabold text-lg text-[#ff82b6] mb-3">
+          <Users size={16} color="#ff82b6" strokeWidth={2} /> Danh sách khách
+          xác nhận
         </h2>
 
         {loading ? (
           <div className="flex justify-center py-10">
-            <Loader2 size={24} className="animate-spin text-[#dfba73]" />
+            <Loader2 size={24} className="animate-spin text-[#ff82b6]" />
           </div>
         ) : error ? (
           <div className="error-box">{error}</div>
         ) : data.length === 0 ? (
-          <p className="empty-text">Chưa có phản hồi nào.</p>
+          <p className="text-center py-10 text-[#b86f94] text-xs font-semibold">
+            Chưa có khách nào gửi phản hồi.
+          </p>
         ) : (
           <div className="flex flex-col gap-2.5">
             {data.map((item, idx) => (
@@ -709,8 +817,8 @@ function AdminPage() {
                 className="admin-card p-4 flex items-center justify-between"
               >
                 <div>
-                  <p className="list-name">{item.name}</p>
-                  <p className="list-time">
+                  <p className="font-bold text-white text-sm">{item.name}</p>
+                  <p className="text-[10.5px] text-[#b86f94] mt-1">
                     {new Date(item.timestamp).toLocaleString("vi-VN")}
                   </p>
                 </div>
@@ -731,7 +839,7 @@ function AdminPage() {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   MAIN APPLICATION
+   ỨNG DỤNG THIỆP MỜI CHÍNH (100% TIẾNG VIỆT · MOBILE FIRST)
    ══════════════════════════════════════════════════════════════ */
 export default function App() {
   const p = new URLSearchParams(window.location.search);
@@ -740,16 +848,11 @@ export default function App() {
 
   const guestName = useMemo(() => getGuestName(), []);
 
-  // Initial welcome confetti burst
+  // Bắn pháo hoa chào mừng lúc vừa mở thiệp
   useEffect(() => {
     const t = setTimeout(() => {
-      confetti({
-        particleCount: 45,
-        spread: 60,
-        origin: { y: 0.25 },
-        colors: ["#c5a059", "#b75d4e", "#f7eedd"],
-      });
-    }, 750);
+      firePrincessConfetti();
+    }, 800);
     return () => clearTimeout(t);
   }, []);
 
@@ -757,7 +860,7 @@ export default function App() {
     {
       icon: CalendarIcon,
       label: "Ngày tổ chức",
-      value: "Thứ Năm, 27 tháng 8 năm 2026",
+      value: CONFIG.ceremonyDayText,
     },
     {
       icon: Clock,
@@ -779,68 +882,108 @@ export default function App() {
 
   return (
     <div className="page-root">
-      <div className="site-card">
-        {/* ── HERO SECTION ─────────────────────────────────────── */}
-        <section className="hero">
-          {/* Pill badge */}
+      {/* Vệt sao lấp lánh theo ngón tay (ReactBits ClickSpark) */}
+      <ClickSpark
+        sparkColor="#ff2a75"
+        sparkCount={7}
+        sparkSize={13}
+        duration={550}
+      />
+
+      {/* Bong bóng ngũ sắc bay lơ lửng */}
+      <PrincessBubbles />
+
+      {/* Nút phát nhạc chuông chúc mừng */}
+      <MusicPlayer src="/cam on mck.mp3" />
+
+      {/* ── THÂN THIỆP MỜI (Mobile First 440px) ────────────────── */}
+      <main className="invitation-card">
+        {/* ── PHẦN 1: BÌA THIỆP & TÂN CỬ NHÂN ──────────────────── */}
+        <section className="invitation-hero">
+          {/* Huy hiệu vương miện */}
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
+            initial={{ opacity: 0, y: -12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45 }}
-            className="hero-badge"
+            className="hero-crown-badge"
           >
-            <GraduationCap size={13} strokeWidth={2.2} />
-            Thư mời tốt nghiệp
+            <Crown size={14} strokeWidth={2.4} color="#ff2a75" />
+            <ShinyText text="THƯ MỜI TỐT NGHIỆP" speed={3} />
+            <Sparkles size={12} strokeWidth={2.4} color="#ff82b6" />
           </motion.div>
 
-          {/* Portrait frame */}
+          {/* Khung ảnh tân cử nhân hào quang xoay */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.94 }}
+            initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{
               duration: 0.65,
               delay: 0.1,
               ease: [0.22, 1, 0.36, 1],
             }}
-            className="portrait-wrap"
+            className="hero-portrait-wrap"
           >
-            <div className="portrait-frame">
+            <div className="hero-portrait-halo" />
+            <div className="hero-portrait-frame">
               <img
                 src={CONFIG.photoUrl}
                 alt={CONFIG.graduateName}
-                className="portrait-img"
+                className="hero-portrait-img"
               />
             </div>
           </motion.div>
 
-          {/* Name & Academic info */}
+          {/* Tên tân cử nhân xuất hiện từ mờ sang nét */}
           <motion.div
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.25 }}
-            className="hero-text"
+            className="flex flex-col items-center px-1"
           >
-            <h1 className="hero-name">{CONFIG.graduateName}</h1>
-            <p className="hero-sub">
+            <BlurText
+              text={CONFIG.graduateName}
+              delay={120}
+              className="hero-name-heading justify-center"
+              animateBy="words"
+              direction="top"
+            />
+            <p className="hero-degree-sub">
               {CONFIG.degree} · {CONFIG.major}
             </p>
-            <p className="hero-univ">{CONFIG.university}</p>
+            <p className="hero-univ-title">{CONFIG.university}</p>
           </motion.div>
         </section>
 
-        {/* ── GUEST INVITATION CARD ────────────────────────────── */}
-        <section className="section">
+        {/* ── PHẦN 2: THƯ MỜI KÍNH GỬI KHÁCH QUÝ ───────────────── */}
+        <section className="art-section">
           <Reveal>
-            <div className="guest-card">
-              <p className="guest-label">Trân trọng kính mời</p>
-              <p className="guest-name">{guestName}</p>
-              <p className="guest-sub">
-                Đến chung vui cùng Mỹ Vy trong ngày Lễ tốt nghiệp cử nhân
+            <SpotlightCard
+              className="guest-invitation-card"
+              spotlightColor="rgba(255, 96, 159, 0.3)"
+              borderColor="rgba(255, 96, 159, 0.45)"
+            >
+              <ShinyText
+                text="TRÂN TRỌNG KÍNH MỜI"
+                speed={3.5}
+                className="guest-kính-mời"
+              />
+              <div className="flex justify-center my-1">
+                <BlurText
+                  text={guestName}
+                  delay={100}
+                  className="guest-main-name justify-center"
+                  animateBy="words"
+                  direction="bottom"
+                />
+              </div>
+              <p className="guest-body-text">
+                Đến tham dự buổi Lễ tốt nghiệp và chia vui cùng Mỹ Vy trong ngày
+                trọng đại ghi dấu cột mốc thanh xuân rực rỡ!
               </p>
-            </div>
+            </SpotlightCard>
           </Reveal>
 
-          {/* Interactive Utility Bar (All Lucide Icons) */}
+          {/* 4 Nút tiện ích tương tác nhanh */}
           <Reveal delay={0.08}>
             <InteractiveActions />
           </Reveal>
@@ -848,41 +991,48 @@ export default function App() {
 
         <Divider />
 
-        {/* ── PHOTO CAROUSEL ───────────────────────────────────── */}
-        <Reveal>
-          <PhotoCarousel />
-        </Reveal>
+        {/* ── PHẦN 3: KHOẢNH KHẮC KỶ NIỆM (CAROUSEL) ───────────── */}
+        <section className="art-section">
+          <Reveal>
+            <SectionTitle title="KHOẢNH KHẮC KỶ NIỆM" />
+          </Reveal>
+          <Reveal delay={0.06}>
+            <PhotoCarousel />
+          </Reveal>
+        </section>
 
         <Divider />
 
-        {/* ── COUNTDOWN ────────────────────────────────────────── */}
-        <section className="section">
+        {/* ── PHẦN 4: ĐẾM NGƯỢC NGÀY LỄ ────────────────────────── */}
+        <section className="art-section">
           <Reveal>
-            <SectionTitle title="Đếm ngược đến ngày lễ" subtitle="COUNTDOWN" />
+            <SectionTitle title="ĐẾM NGƯỢC NGÀY LỄ" />
           </Reveal>
           <Reveal delay={0.06}>
             <Countdown target={CONFIG.ceremonyDate} />
           </Reveal>
         </section>
 
-        {/* ── CALENDAR ─────────────────────────────────────────── */}
-        <section className="section">
+        {/* Lịch tháng 8 */}
+        <section className="art-section pt-0">
           <Reveal>
-            <div className="card p-5">
-              <MiniCalendar date={CONFIG.ceremonyDate} />
-            </div>
+            <MiniCalendar date={CONFIG.ceremonyDate} />
           </Reveal>
         </section>
 
         <Divider />
 
-        {/* ── PROGRAM & DETAILS ────────────────────────────────── */}
-        <section className="section">
+        {/* ── PHẦN 5: THÔNG TIN BUỔI LỄ & BẢN ĐỒ ───────────────── */}
+        <section className="art-section">
           <Reveal>
-            <SectionTitle title="Thông tin buổi lễ" subtitle="EVENT DETAILS" />
+            <SectionTitle title="THÔNG TIN BUỔI LỄ" />
           </Reveal>
           <Reveal delay={0.06}>
-            <div className="card">
+            <SpotlightCard
+              className="info-card-wrap"
+              spotlightColor="rgba(255, 42, 117, 0.18)"
+              borderColor="rgba(255, 96, 159, 0.38)"
+            >
               {details.map((d, i) => (
                 <motion.div
                   key={d.label}
@@ -894,24 +1044,24 @@ export default function App() {
                     ease: [0.22, 1, 0.36, 1],
                     duration: 0.4,
                   }}
-                  className={`detail-row ${
-                    i < details.length - 1 ? "detail-border" : ""
+                  className={`info-row ${
+                    i < details.length - 1 ? "info-row-border" : ""
                   }`}
                 >
-                  <div className="detail-icon">
-                    <d.icon size={16} strokeWidth={2} />
+                  <div className="info-icon-badge">
+                    <d.icon size={18} strokeWidth={2.2} />
                   </div>
-                  <div>
-                    <p className="detail-label">{d.label}</p>
-                    <p className="detail-value">{d.value}</p>
-                    {d.sub && <p className="detail-sub">{d.sub}</p>}
+                  <div className="info-text-container">
+                    <p className="info-label">{d.label}</p>
+                    <p className="info-value">{d.value}</p>
+                    {d.sub && <p className="info-sub">{d.sub}</p>}
                   </div>
                 </motion.div>
               ))}
-            </div>
+            </SpotlightCard>
           </Reveal>
 
-          {/* Map Link */}
+          {/* Nút mở chỉ đường Google Maps */}
           <Reveal delay={0.1}>
             <a
               href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
@@ -919,16 +1069,23 @@ export default function App() {
               )}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="map-link"
+              className="google-map-btn"
             >
-              <div className="detail-icon">
-                <Compass size={16} strokeWidth={2} />
+              <div className="info-icon-badge !w-9 !h-9 !mt-0">
+                <Compass size={17} strokeWidth={2.2} />
               </div>
-              <span className="map-text">{CONFIG.venueAddress}</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-[10px] font-extrabold tracking-wider uppercase text-[#ff2a75]">
+                  Chỉ đường Google Maps
+                </p>
+                <p className="text-xs font-bold text-[#2e081c] truncate">
+                  {CONFIG.venueAddress}
+                </p>
+              </div>
               <ExternalLink
-                size={14}
-                strokeWidth={2}
-                style={{ flexShrink: 0, opacity: 0.55 }}
+                size={15}
+                strokeWidth={2.2}
+                className="text-[#ff2a75] shrink-0 opacity-75"
               />
             </a>
           </Reveal>
@@ -936,52 +1093,52 @@ export default function App() {
 
         <Divider />
 
-        {/* ── RSVP ─────────────────────────────────────────────── */}
+        {/* ── PHẦN 6: FORM XÁC NHẬN THAM DỰ (RSVP) ─────────────── */}
         <RSVPSection guestName={guestName} />
 
-        {/* ── FOOTER ───────────────────────────────────────────── */}
-        <footer className="site-footer">
+        {/* ── PHẦN 7: CHÂN THIỆP CẢM ƠN ────────────────────────── */}
+        <footer className="invitation-footer">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <div className="footer-hearts">
+            <div className="flex justify-center gap-1.5 mb-2.5">
               {[0, 1, 2].map((i) => (
                 <motion.div
                   key={i}
-                  animate={{ scale: [1, 1.25, 1] }}
+                  animate={{ scale: [1, 1.3, 1] }}
                   transition={{
-                    duration: 2.2,
-                    delay: i * 0.35,
+                    duration: 2,
+                    delay: i * 0.3,
                     repeat: Infinity,
                   }}
                 >
                   <Heart
-                    size={13}
-                    fill="#c5a059"
-                    color="#c5a059"
+                    size={14}
+                    fill="#ff2a75"
+                    color="#ff2a75"
                     strokeWidth={0}
                   />
                 </motion.div>
               ))}
             </div>
-            <p className="footer-name">{CONFIG.graduateName}</p>
-            <p className="footer-meta">Khóa 2026 · {CONFIG.university}</p>
+            <p className="footer-name-title">{CONFIG.graduateName}</p>
+            <p className="footer-school-sub">Khóa 2026 · {CONFIG.university}</p>
           </motion.div>
         </footer>
 
-        {/* Floating Celebration Trigger Button */}
+        {/* Nút nổi bắn pháo hoa góc màn hình */}
         <button
-          onClick={fireCelebrationConfetti}
+          onClick={firePrincessConfetti}
           className="floating-celebrate-btn"
           aria-label="Bắn pháo hoa chúc mừng"
         >
-          <Sparkles size={16} />
+          <Sparkles size={17} />
           <span>Chúc mừng</span>
         </button>
-      </div>
+      </main>
     </div>
   );
 }

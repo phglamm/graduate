@@ -1,42 +1,37 @@
-@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Bricolage+Grotesque:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:wght@500;600;700;800&display=swap");
 @import "tailwindcss";
 
 /* ═══════════════════════════════════════════════════════════════
-   PRESTIGE ROSE GOLD & CHAMPAGNE SILK DESIGN SYSTEM
+   THIẾT KẾ THIỆP MỜI TỐT NGHIỆP ONLINE — CÔNG CHÚA HỒNG RỰC RỠ
+   (100% TIẾNG VIỆT · MOBILE FIRST CHUẨN MỰC)
    ═══════════════════════════════════════════════════════════════ */
 :root {
-  /* Primary Rose Gold Palette */
-  --rose-gold:       #b75d4e;
-  --rose-gold-light: #c97463;
-  --rose-gold-dark:  #8f3e30;
-  --rose-gold-subtle:#f6e8e5;
-  --rose-gold-glow:  rgba(183, 93, 78, 0.16);
+  /* Bảng màu Công chúa Hồng & Ngọc trai */
+  --primary-pink:     #ff2a75;
+  --primary-pink-deep:#e01058;
+  --bubble-pink:      #ff609f;
+  --soft-pink:        #ff82b6;
+  --pastel-pink:      #ffb0d1;
+  --milk-pink:        #fff0f6;
+  --snow-white:       #ffffff;
+  --accent-gold:      #ffcf56;
 
-  /* Champagne & Metallic Gold */
-  --gold:            #c5a059;
-  --gold-light:      #dfba73;
-  --gold-dark:       #96722d;
-  --gold-bg:         #faf3e6;
-  --gold-glow:       rgba(197, 160, 89, 0.2);
+  /* Hiệu ứng phát sáng & đổ bóng */
+  --pink-glow:        rgba(255, 42, 117, 0.35);
+  --soft-glow:        rgba(255, 96, 159, 0.25);
+  --border-pink:      rgba(255, 96, 159, 0.38);
 
-  /* Canvas & Card Surfaces */
-  --bg-desktop:      #181514;
-  --card-bg:         rgba(253, 251, 247, 0.94);
-  --card-surface:    #ffffff;
-  --card-border:     rgba(197, 160, 89, 0.22);
-  --card-border-subtle: rgba(183, 93, 78, 0.12);
+  /* Màu chữ */
+  --text-title:       #2e081c;
+  --text-body:        #521d37;
+  --text-muted:       #8a4066;
+  --text-light:       #b86f94;
 
-  /* Typography */
-  --text-main:       #231b18;
-  --text-muted:      #6c5b54;
-  --text-faint:      #9c8b84;
-  --text-gold:       #a37d36;
-
-  --radius:          18px;
-  --radius-sm:       12px;
+  --card-radius:      24px;
+  --card-radius-sm:   16px;
 }
 
-/* ── Reset & base ──────────────────────────────────────────── */
+/* ── Reset & Base Layout ────────────────────────────────────── */
 *,
 *::before,
 *::after {
@@ -47,52 +42,24 @@
 
 html {
   scroll-behavior: smooth;
+  font-size: 14.5px;
 }
 
 body {
   font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
-  font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
-  background-color: var(--bg-desktop);
+  background-color: #14050e;
   background-image: 
-    radial-gradient(circle at 50% 0%, rgba(197, 160, 89, 0.15) 0%, transparent 60%),
-    radial-gradient(circle at 50% 100%, rgba(183, 93, 78, 0.12) 0%, transparent 60%);
+    radial-gradient(circle at 15% 20%, rgba(255, 42, 117, 0.25) 0%, transparent 40%),
+    radial-gradient(circle at 85% 75%, rgba(192, 132, 252, 0.25) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(255, 130, 182, 0.15) 0%, transparent 60%);
   min-height: 100vh;
-  color: var(--text-main);
+  color: var(--text-body);
   overflow-x: hidden;
 }
 
-/* ── Custom Animations ──────────────────────────────────────── */
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-7px); }
-}
-
-@keyframes pulse-gold {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(197, 160, 89, 0.6); }
-  60%      { box-shadow: 0 0 0 10px rgba(197, 160, 89, 0); }
-}
-
-@keyframes shimmer-gold {
-  0%   { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-@keyframes fly-up {
-  0%   { opacity: 1; transform: translateY(0) scale(0.8) rotate(0deg); }
-  50%  { opacity: 0.9; transform: translateY(-40px) scale(1.1) rotate(-10deg); }
-  100% { opacity: 0; transform: translateY(-90px) scale(0.6) rotate(15deg); }
-}
-
-.floating-heart {
-  position: absolute;
-  pointer-events: none;
-  animation: fly-up 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  z-index: 99;
-}
-
-/* ── Page Layout (Centered mobile-first container) ─────────── */
+/* ── Khung Thiệp Trung Tâm (Mobile First) ───────────────────── */
 .page-root {
   position: relative;
   min-height: 100vh;
@@ -104,120 +71,234 @@ body {
 
 @media (min-width: 640px) {
   .page-root {
-    padding: 24px 0;
+    padding: 28px 16px;
   }
 }
 
-.site-card {
+.invitation-card {
   position: relative;
-  z-index: 1;
+  z-index: 10;
   width: 100%;
-  max-width: 430px;
+  max-width: 440px;
   min-height: 100vh;
   background: linear-gradient(
-    175deg,
-    #fffdfb 0%,
-    #fbf7f2 28%,
-    #f8f2eb 65%,
-    #f3e9df 100%
+    180deg,
+    #ffffff 0%,
+    #fff2f7 18%,
+    #ffe8f3 45%,
+    #ffdcee 75%,
+    #ffcde6 100%
   );
   box-shadow: 
-    0 0 0 1px rgba(197, 160, 89, 0.25),
-    0 25px 80px rgba(0, 0, 0, 0.45);
+    0 0 0 2px rgba(255, 96, 159, 0.4),
+    0 0 50px rgba(255, 42, 117, 0.35),
+    0 25px 90px rgba(0, 0, 0, 0.65);
 }
 
 @media (min-width: 640px) {
-  .site-card {
+  .invitation-card {
     min-height: auto;
-    border-radius: 28px;
+    border-radius: 36px;
     overflow: hidden;
   }
 }
 
-/* ── Hero Section ───────────────────────────────────────────── */
-.hero {
+/* ── Animation & Hiệu Ứng Phát Sáng ────────────────────────── */
+@keyframes bubble-float-up {
+  0% {
+    transform: translateY(105vh) translateX(0) scale(0.7);
+    opacity: 0;
+  }
+  15% { opacity: 0.85; }
+  50% {
+    transform: translateY(50vh) translateX(20px) scale(1.05);
+    opacity: 0.95;
+  }
+  85% { opacity: 0.8; }
+  100% {
+    transform: translateY(-15vh) translateX(-20px) scale(1.2);
+    opacity: 0;
+  }
+}
+
+@keyframes halo-rotate {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes date-pulse {
+  0%, 100% {
+    box-shadow: 
+      0 0 0 0 rgba(255, 42, 117, 0.6),
+      0 0 25px rgba(255, 96, 159, 0.45);
+  }
+  60% {
+    box-shadow: 
+      0 0 0 12px rgba(255, 42, 117, 0),
+      0 0 40px rgba(255, 130, 182, 0.7);
+  }
+}
+
+@keyframes fly-heart {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(0.6) rotate(0deg);
+  }
+  50% {
+    opacity: 0.95;
+    transform: translateY(-55px) scale(1.25) rotate(-12deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-115px) scale(0.5) rotate(18deg);
+  }
+}
+
+.floating-heart-anim {
+  position: absolute;
+  pointer-events: none;
+  animation: fly-heart 1.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  z-index: 100;
+  filter: drop-shadow(0 3px 10px rgba(255, 42, 117, 0.6));
+}
+
+/* Bong bóng ngũ sắc 3D */
+.iridescent-bubble {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: auto;
+  cursor: pointer;
+  background: radial-gradient(
+    circle at 32% 32%,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 182, 212, 0.6) 30%,
+    rgba(192, 132, 252, 0.35) 60%,
+    rgba(255, 42, 117, 0.55) 100%
+  );
+  box-shadow: 
+    inset -4px -4px 12px rgba(255, 42, 117, 0.45),
+    inset 4px 4px 10px rgba(255, 255, 255, 0.95),
+    0 0 18px rgba(255, 130, 182, 0.45);
+  backdrop-filter: blur(1.5px);
+  animation: bubble-float-up var(--rise-dur, 12s) var(--rise-delay, 0s) linear infinite;
+  z-index: 2;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.iridescent-bubble:hover {
+  transform: scale(1.25);
+}
+
+/* ── 1. Phần Đầu Thiệp (Hero Header) ────────────────────────── */
+.invitation-hero {
   position: relative;
-  padding: 46px 24px 30px;
+  padding: 44px 20px 30px;
   text-align: center;
   background: linear-gradient(
     180deg,
-    rgba(247, 238, 221, 0.75) 0%,
-    rgba(253, 251, 247, 0.4) 100%
+    rgba(255, 235, 245, 0.95) 0%,
+    rgba(255, 255, 255, 0.75) 100%
   );
-  border-bottom: 1px solid var(--card-border-subtle);
+  border-bottom: 1.5px solid var(--border-pink);
   overflow: hidden;
 }
 
-.hero::before {
+.invitation-hero::before {
   content: "";
   position: absolute;
-  top: -70px;
+  top: -90px;
   left: 50%;
   transform: translateX(-50%);
-  width: 340px;
-  height: 340px;
+  width: 380px;
+  height: 380px;
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    rgba(223, 186, 115, 0.18) 0%,
-    rgba(183, 93, 78, 0.08) 45%,
+    rgba(255, 96, 159, 0.3) 0%,
+    rgba(255, 207, 86, 0.18) 35%,
     transparent 70%
   );
   pointer-events: none;
 }
 
-/* ── Hero badge ─────────────────────────────────────────────── */
-.hero-badge {
+/* Huy hiệu vương miện trên cùng */
+.hero-crown-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 16px;
+  gap: 7px;
+  padding: 7px 18px;
   border-radius: 99px;
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid var(--card-border);
-  color: var(--rose-gold);
-  font-size: 11px;
-  font-weight: 600;
+  background: linear-gradient(135deg, #ffffff 0%, #fff0f6 100%);
+  border: 1.5px solid rgba(255, 42, 117, 0.38);
+  color: var(--primary-pink);
+  font-size: 11.5px;
+  font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
   margin-bottom: 24px;
-  box-shadow: 0 2px 12px var(--rose-gold-glow);
+  box-shadow: 
+    0 4px 16px rgba(255, 42, 117, 0.22),
+    inset 0 1px 2px #fff;
 }
 
-/* ── Portrait Frame ─────────────────────────────────────────── */
-.portrait-wrap {
+/* Khung Chân Dung Công Chúa */
+.hero-portrait-wrap {
   display: flex;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 22px;
   position: relative;
 }
 
-.portrait-frame {
+.hero-portrait-halo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(235px, 63vw);
+  height: min(295px, 79vw);
+  border-radius: 50% 50% 46% 46%;
+  background: linear-gradient(
+    135deg,
+    #ff2a75 0%,
+    #ffcf56 35%,
+    #c084fc 70%,
+    #ff609f 100%
+  );
+  background-size: 300% 300%;
+  animation: halo-rotate 6s ease infinite;
+  opacity: 0.8;
+  filter: blur(14px);
+  z-index: 1;
+}
+
+.hero-portrait-frame {
   position: relative;
-  width: min(200px, 54vw);
+  z-index: 2;
+  width: min(205px, 56vw);
   border-radius: 50% 50% 46% 46%;
   overflow: hidden;
-  border: 3px solid rgba(197, 160, 89, 0.45);
-  background: linear-gradient(180deg, #f7eedd 0%, #ecd8c9 100%);
+  border: 3.5px solid #ffffff;
+  background: linear-gradient(180deg, #fff0f6 0%, #ffd4e8 100%);
   box-shadow:
-    0 0 0 6px rgba(197, 160, 89, 0.12),
-    0 16px 36px rgba(183, 93, 78, 0.18);
+    0 0 0 3px rgba(255, 42, 117, 0.4),
+    0 18px 45px rgba(255, 42, 117, 0.35);
 }
 
-.portrait-frame::after {
+.hero-portrait-frame::after {
   content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(
     180deg,
-    transparent 60%,
-    rgba(183, 93, 78, 0.15) 100%
+    transparent 62%,
+    rgba(255, 42, 117, 0.22) 100%
   );
   pointer-events: none;
 }
 
-.portrait-img {
+.hero-portrait-img {
   display: block;
   width: 100%;
   aspect-ratio: 3/4;
@@ -225,554 +306,475 @@ body {
   object-position: top center;
 }
 
-/* ── Hero text ──────────────────────────────────────────────── */
-.hero-text {
-  padding: 0 4px;
-}
-
-.hero-name {
+/* Tên Tân Cử Nhân */
+.hero-name-heading {
   font-family: "Bricolage Grotesque", sans-serif;
-  font-size: clamp(1.85rem, 7vw, 2.45rem);
+  font-size: clamp(1.9rem, 7.5vw, 2.55rem);
   font-weight: 800;
-  color: var(--text-main);
-  letter-spacing: -0.03em;
-  line-height: 1.12;
-  margin-bottom: 8px;
-  background: linear-gradient(135deg, #231b18 20%, #b75d4e 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+  margin-bottom: 6px;
+  color: var(--primary-pink-deep);
+  text-shadow: 0 2px 12px rgba(255, 42, 117, 0.25);
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
-.hero-sub {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--rose-gold);
-  letter-spacing: 0.02em;
+.hero-degree-sub {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--primary-pink);
+  letter-spacing: 0.01em;
   margin-bottom: 3px;
 }
 
-.hero-univ {
-  font-size: 11.5px;
+.hero-univ-title {
+  font-size: 12px;
+  font-weight: 600;
   color: var(--text-muted);
-  letter-spacing: 0.01em;
 }
 
-/* ── Sections ───────────────────────────────────────────────── */
-.section {
-  padding: 22px 20px;
+/* ── 2. Tiêu Đề Đề Mục Nghệ Thuật (Section Header) ─────────── */
+.section-art-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
 }
 
-.section-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
+.section-title-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 99px;
+  background: linear-gradient(135deg, #ffffff 0%, #fff0f6 100%);
+  border: 1.5px solid rgba(255, 42, 117, 0.32);
+  color: var(--primary-pink);
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--gold-dark);
-  margin-bottom: 4px;
+  box-shadow: 0 2px 10px rgba(255, 42, 117, 0.15);
 }
 
-.section-heading {
-  font-family: "Bricolage Grotesque", sans-serif;
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: var(--text-main);
-  letter-spacing: -0.025em;
-  line-height: 1.2;
-}
-
-/* ── Divider ────────────────────────────────────────────────── */
-.divider {
-  height: 1px;
-  margin: 0 20px;
+/* Đường phân cách ánh hồng */
+.art-divider {
+  height: 2px;
+  margin: 4px 20px;
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(197, 160, 89, 0.3),
-    rgba(183, 93, 78, 0.25),
+    rgba(255, 96, 159, 0.35),
+    rgba(255, 42, 117, 0.7),
+    rgba(255, 207, 86, 0.45),
     transparent
   );
 }
 
-/* ── Card Containers ────────────────────────────────────────── */
-.card {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: var(--radius);
-  backdrop-filter: blur(14px);
-  box-shadow:
-    0 4px 20px rgba(183, 93, 78, 0.05),
-    0 1px 4px rgba(197, 160, 89, 0.08);
-  padding: 18px;
+/* Khối Section padding */
+.art-section {
+  padding: 22px 18px;
 }
 
-/* ── Guest card ─────────────────────────────────────────────── */
-.guest-card {
+/* ── 3. Thẻ Kính Thư Mời (Guest Card) ───────────────────────── */
+.guest-invitation-card {
   text-align: center;
-  padding: 28px 20px;
-  border-radius: var(--radius);
+  padding: 26px 18px;
+  border-radius: var(--card-radius);
   background: linear-gradient(
     145deg,
-    rgba(255, 255, 255, 0.92) 0%,
-    rgba(247, 238, 221, 0.8) 100%
+    rgba(255, 255, 255, 0.96) 0%,
+    rgba(255, 235, 245, 0.92) 100%
   );
-  border: 1px solid var(--card-border);
+  border: 2px solid rgba(255, 96, 159, 0.45);
   box-shadow:
-    0 8px 26px rgba(183, 93, 78, 0.07),
-    0 1px 3px rgba(197, 160, 89, 0.12);
+    0 10px 32px rgba(255, 42, 117, 0.16),
+    inset 0 1px 3px #ffffff;
 }
 
-.guest-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--gold-dark);
-  margin-bottom: 8px;
-}
-
-.guest-name {
-  font-family: "Bricolage Grotesque", sans-serif;
-  font-size: clamp(1.55rem, 5.8vw, 1.95rem);
+.guest-kính-mời {
+  font-size: 11px;
   font-weight: 800;
-  color: var(--rose-gold-dark);
-  letter-spacing: -0.025em;
-  line-height: 1.15;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--primary-pink);
   margin-bottom: 6px;
 }
 
-.guest-sub {
-  font-size: 13px;
-  color: var(--text-muted);
-}
-
-/* ── Carousel ───────────────────────────────────────────────── */
-.carousel-section {
-  padding: 0;
-  overflow: hidden;
-  position: relative;
-}
-
-.carousel-track-wrap {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 4/5;
-  overflow: hidden;
-  background: #f1e6da;
-}
-
-.carousel-slide {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  touch-action: pan-y;
-}
-
-.carousel-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top center;
-  display: block;
-  user-select: none;
-  -webkit-user-drag: none;
-}
-
-.carousel-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    180deg,
-    transparent 60%,
-    rgba(35, 27, 24, 0.45) 100%
-  );
-  pointer-events: none;
-}
-
-.carousel-badge {
-  position: absolute;
-  bottom: 14px;
-  left: 16px;
-  padding: 4px 10px;
-  border-radius: 99px;
-  background: rgba(35, 27, 24, 0.65);
-  backdrop-filter: blur(8px);
-  color: #fff;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-}
-
-/* Carousel Arrows */
-.carousel-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(8px);
-  color: var(--rose-gold-dark);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.carousel-arrow:hover {
-  background: #ffffff;
-  transform: translateY(-50%) scale(1.08);
-}
-
-.carousel-arrow:active {
-  transform: translateY(-50%) scale(0.92);
-}
-
-.carousel-arrow-left  { left: 12px; }
-.carousel-arrow-right { right: 12px; }
-
-/* Carousel Dots */
-.carousel-dots {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 6px;
-  padding: 12px 0 8px;
-}
-
-.carousel-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  border: none;
-  background: #d8c6b9;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  padding: 0;
-}
-
-.carousel-dot-active {
-  width: 22px;
-  border-radius: 4px;
-  background: var(--rose-gold);
-}
-
-/* ── Countdown ──────────────────────────────────────────────── */
-.cd-card {
-  background: #ffffff;
-  border: 1px solid var(--card-border);
-  border-radius: 14px;
-  width: 72px;
-  padding: 12px 0;
-  text-align: center;
-  box-shadow:
-    0 4px 12px rgba(183, 93, 78, 0.05),
-    0 1px 3px rgba(197, 160, 89, 0.08);
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-
-.cd-num {
-  display: block;
+.guest-main-name {
   font-family: "Bricolage Grotesque", sans-serif;
-  font-size: 26px;
+  font-size: clamp(1.55rem, 6vw, 2rem);
   font-weight: 800;
-  color: var(--rose-gold);
-  line-height: 1;
-  letter-spacing: -0.03em;
-  font-variant-numeric: tabular-nums;
-}
-
-.cd-label {
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-faint);
-}
-
-/* ── Calendar ───────────────────────────────────────────────── */
-.cal-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 3px;
-}
-
-.cal-month {
-  font-family: "Bricolage Grotesque", sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--rose-gold-dark);
-  text-align: center;
-  margin-bottom: 14px;
-}
-
-.cal-head {
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: var(--text-faint);
-  text-align: center;
-  padding: 4px 0;
-}
-
-.cal-cell-wrap {
-  display: flex;
-  align-items: center;
+  color: var(--primary-pink-deep);
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  margin-bottom: 6px;
+  display: inline-flex;
+  flex-wrap: wrap;
   justify-content: center;
-  padding: 3px 0;
 }
 
-.cal-day {
-  font-size: 11.5px;
-  color: var(--text-muted);
-  font-weight: 500;
-}
-
-.cal-active {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #c5a059 0%, #b75d4e 100%);
-  color: white;
-  font-size: 11.5px;
-  font-weight: 700;
-  animation: pulse-gold 2.4s infinite;
-  box-shadow: 0 3px 8px rgba(183, 93, 78, 0.3);
-}
-
-/* ── Detail Rows ────────────────────────────────────────────── */
-.detail-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 13px 0;
-}
-
-.detail-border {
-  border-bottom: 1px solid var(--card-border-subtle);
-}
-
-.detail-icon {
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  background: var(--gold-bg);
-  border: 1px solid rgba(197, 160, 89, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  color: var(--gold-dark);
-}
-
-.detail-label {
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-faint);
-  margin-bottom: 2px;
-}
-
-.detail-value {
+.guest-body-text {
   font-size: 13px;
-  font-weight: 600;
-  color: var(--text-main);
-  line-height: 1.4;
-}
-
-.detail-sub {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-top: 1px;
-}
-
-/* ── Action Buttons & Links ─────────────────────────────────── */
-.map-link {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 12px;
-  padding: 12px 14px;
-  border-radius: 12px;
-  background: #ffffff;
-  border: 1px solid var(--card-border);
-  color: var(--text-main);
-  text-decoration: none;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-}
-
-.map-link:hover {
-  background: var(--gold-bg);
-  border-color: rgba(197, 160, 89, 0.45);
-  transform: translateY(-1px);
-}
-
-.map-text {
-  flex: 1;
-  font-size: 11.5px;
   font-weight: 500;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  color: var(--text-body);
+  line-height: 1.55;
 }
 
-/* ── Quick Utility Bar (Add to Cal, Celebrate, Wish) ────────── */
-.action-grid {
+/* ── 4. Thanh Tiện Ích Nhanh (Action Grid) ───────────────────── */
+.quick-action-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
   margin-top: 14px;
 }
 
-.action-card-btn {
+.action-pill-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 12px 10px;
-  border-radius: 12px;
-  border: 1px solid var(--card-border);
+  gap: 6px;
+  padding: 11px 8px;
+  border-radius: var(--card-radius-sm);
+  border: 1.5px solid rgba(255, 96, 159, 0.32);
   background: #ffffff;
-  color: var(--text-main);
-  font-size: 12px;
-  font-weight: 600;
+  color: var(--text-title);
+  font-size: 11.5px;
+  font-weight: 700;
+  white-space: nowrap;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 4px 12px rgba(255, 42, 117, 0.08);
 }
 
-.action-card-btn:active {
-  transform: scale(0.96);
+.action-pill-btn:active {
+  transform: scale(0.95);
 }
 
-.action-card-btn:hover {
-  background: var(--gold-bg);
-  border-color: rgba(197, 160, 89, 0.4);
+.action-pill-btn:hover {
+  background: #fff0f6;
+  border-color: var(--primary-pink);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(255, 42, 117, 0.22);
 }
 
-.btn-celebrate {
-  background: linear-gradient(135deg, #f7eedd 0%, #faece3 100%);
-  border-color: rgba(197, 160, 89, 0.4);
-  color: var(--rose-gold-dark);
+.action-pill-highlight {
+  background: linear-gradient(135deg, #fff0f6 0%, #ffd8eb 100%);
+  border-color: rgba(255, 42, 117, 0.45);
+  color: var(--primary-pink-deep);
 }
 
-/* ── Timeline Program ───────────────────────────────────────── */
-.timeline-item {
+/* ── 5. Thẻ Ảnh Kỷ Niệm (Photo Carousel) ────────────────────── */
+.carousel-wrap {
   position: relative;
-  display: flex;
-  gap: 14px;
-  padding-bottom: 14px;
+  width: 100%;
+  aspect-ratio: 4/5;
+  overflow: hidden;
+  border-radius: var(--card-radius);
+  background: #ffe6f2;
+  box-shadow: 0 8px 25px rgba(255, 42, 117, 0.15);
+  border: 2px solid rgba(255, 96, 159, 0.35);
+  touch-action: pan-y;
 }
 
-.timeline-item:last-child {
+.carousel-slide-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+  user-select: none;
+}
+
+.carousel-caption-pill {
+  position: absolute;
+  bottom: 14px;
+  left: 16px;
+  padding: 5px 14px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 96, 159, 0.4);
+  color: var(--primary-pink-deep);
+  font-size: 11.5px;
+  font-weight: 700;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 14px rgba(255, 42, 117, 0.25);
+}
+
+.carousel-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  color: var(--primary-pink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(255, 42, 117, 0.3);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.carousel-nav-btn:hover {
+  background: #ffffff;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 6px 20px rgba(255, 42, 117, 0.45);
+}
+
+.carousel-nav-btn:active {
+  transform: translateY(-50%) scale(0.92);
+}
+
+/* ── 6. Đếm Ngược & Lịch ────────────────────────────────────── */
+.countdown-box {
+  background: #ffffff;
+  border: 1.5px solid rgba(255, 96, 159, 0.35);
+  border-radius: 18px;
+  flex: 1;
+  min-width: 58px;
+  max-width: 82px;
+  padding: 12px 0;
+  text-align: center;
+  box-shadow:
+    0 6px 18px rgba(255, 42, 117, 0.12),
+    inset 0 1px 2px #ffffff;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.countdown-number {
+  display: block;
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: clamp(22px, 5.8vw, 28px);
+  font-weight: 800;
+  color: var(--primary-pink);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  filter: drop-shadow(0 1px 4px rgba(255, 42, 117, 0.25));
+}
+
+.countdown-unit {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-light);
+}
+
+/* Lịch Tháng 8 Nghệ Thuật */
+.calendar-card {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1.5px solid var(--border-pink);
+  border-radius: var(--card-radius);
+  padding: 18px 14px;
+  box-shadow:
+    0 8px 30px rgba(255, 42, 117, 0.12),
+    0 2px 6px rgba(255, 96, 159, 0.08);
+  backdrop-filter: blur(16px);
+}
+
+.calendar-header-title {
+  font-size: 13.5px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--primary-pink-deep);
+  text-align: center;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.calendar-grid-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+
+.calendar-weekday-cell {
+  font-size: 10.5px;
+  font-weight: 800;
+  text-align: center;
+  padding: 4px 0;
+  color: var(--text-muted);
+}
+
+.calendar-weekday-sun {
+  color: var(--primary-pink);
+}
+
+.calendar-day-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-title);
+  margin: 1px auto;
+  width: 32px;
+  height: 32px;
+  transition: all 0.2s ease;
+}
+
+.calendar-active-day {
+  background: linear-gradient(135deg, #ff2a75 0%, #ff609f 60%, #ffcf56 100%);
+  color: #ffffff !important;
+  font-weight: 800;
+  box-shadow: 0 4px 14px rgba(255, 42, 117, 0.5);
+  animation: date-pulse 2.2s infinite;
+}
+
+.calendar-footer-note {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(255, 96, 159, 0.3);
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--primary-pink);
+}
+
+/* ── 7. Thông Tin Buổi Lễ & Chỉ Đường ───────────────────────── */
+.info-card-wrap {
+  padding: 20px 18px;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: var(--card-radius);
+  border: 1.5px solid var(--border-pink);
+  box-shadow:
+    0 8px 30px rgba(255, 42, 117, 0.12),
+    0 2px 6px rgba(255, 96, 159, 0.1);
+  backdrop-filter: blur(16px);
+}
+
+.info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  padding: 13px 0;
+}
+
+.info-row:first-child {
+  padding-top: 0;
+}
+
+.info-row:last-child {
   padding-bottom: 0;
 }
 
-.timeline-line {
-  position: absolute;
-  top: 24px;
-  bottom: 0;
-  left: 16px;
-  width: 2px;
-  background: rgba(197, 160, 89, 0.25);
+.info-row-border {
+  border-bottom: 1px solid rgba(255, 96, 159, 0.22);
 }
 
-.timeline-dot {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: #ffffff;
-  border: 2px solid var(--rose-gold);
+.info-icon-badge {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #fff0f6 0%, #ffe6f2 100%);
+  border: 1.5px solid rgba(255, 96, 159, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--rose-gold);
-  z-index: 1;
+  color: var(--primary-pink);
+  box-shadow: 0 2px 8px rgba(255, 42, 117, 0.15);
+  margin-top: 2px;
 }
 
-.timeline-content {
+.info-text-container {
   flex: 1;
-  padding-top: 4px;
+  min-width: 0;
 }
 
-.timeline-time {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--gold-dark);
-  letter-spacing: 0.04em;
-}
-
-.timeline-title {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-main);
-}
-
-.timeline-desc {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-top: 1px;
-}
-
-/* ── RSVP Section ───────────────────────────────────────────── */
-.input-label {
-  display: block;
+.info-label {
   font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  font-weight: 800;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--text-faint);
-  margin-bottom: 6px;
+  color: var(--text-light);
+  margin-bottom: 2px;
 }
 
+.info-value {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-title);
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.info-sub {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-top: 2px;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.google-map-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 13px 16px;
+  border-radius: var(--card-radius-sm);
+  background: linear-gradient(135deg, #ffffff 0%, #fff2f7 100%);
+  border: 1.5px solid var(--border-pink);
+  color: var(--text-title);
+  text-decoration: none;
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 4px 14px rgba(255, 42, 117, 0.08);
+}
+
+.google-map-btn:hover {
+  background: #fff0f6;
+  border-color: var(--primary-pink);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 42, 117, 0.2);
+}
+
+/* ── 8. Form Xác Nhận Tham Dự (RSVP) ────────────────────────── */
 .modern-input {
   width: 100%;
   padding: 12px 14px;
   border-radius: 12px;
-  border: 1.5px solid var(--card-border);
+  border: 1.5px solid rgba(255, 96, 159, 0.35);
   background: #ffffff;
-  color: var(--text-main);
+  color: var(--text-title);
   font-size: 14px;
   font-family: "Plus Jakarta Sans", sans-serif;
+  font-weight: 600;
   outline: none;
   transition: all 0.2s ease;
 }
 
 .modern-input:focus {
-  border-color: var(--rose-gold);
-  box-shadow: 0 0 0 3px var(--rose-gold-glow);
+  border-color: var(--primary-pink);
+  box-shadow: 0 0 0 3.5px var(--pink-glow);
 }
 
 .modern-input::placeholder {
-  color: var(--text-faint);
+  color: var(--text-light);
+  font-weight: 400;
 }
 
-.input-hint {
-  font-size: 11px;
-  color: var(--rose-gold);
-  margin-top: 5px;
-}
-
-.rsvp-btn {
+.rsvp-option-btn {
   flex: 1;
   display: flex;
   align-items: center;
@@ -781,97 +783,145 @@ body {
   margin: 10px 0;
   padding: 11px 12px;
   border-radius: 12px;
-  border: 1.5px solid var(--card-border);
+  border: 1.5px solid rgba(255, 96, 159, 0.3);
   background: #ffffff;
   color: var(--text-muted);
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   font-family: "Plus Jakarta Sans", sans-serif;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.rsvp-btn:active {
+.rsvp-option-btn:active {
   transform: scale(0.96);
 }
 
-.rsvp-idle:hover {
-  background: var(--gold-bg);
-  border-color: rgba(197, 160, 89, 0.4);
+.rsvp-option-idle:hover {
+  background: #fff0f6;
+  border-color: var(--primary-pink);
 }
 
-.rsvp-yes {
-  background: linear-gradient(135deg, #b75d4e 0%, #c97463 100%);
-  border-color: var(--rose-gold);
+.rsvp-option-yes {
+  background: linear-gradient(135deg, #ff2a75 0%, #ff609f 100%);
+  border-color: var(--primary-pink);
   color: #ffffff;
-  box-shadow: 0 4px 14px rgba(183, 93, 78, 0.35);
+  box-shadow: 0 6px 18px rgba(255, 42, 117, 0.4);
 }
 
-.rsvp-no {
-  background: #645a55;
-  border-color: #645a55;
+.rsvp-option-no {
+  background: #73455b;
+  border-color: #73455b;
   color: #ffffff;
 }
 
-.submit-btn {
+.rsvp-submit-btn {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 13px;
-  border-radius: 12px;
+  padding: 14px;
+  border-radius: 14px;
   border: none;
-  background: linear-gradient(135deg, #b75d4e 0%, #c97463 50%, #c5a059 100%);
+  background: linear-gradient(135deg, #ff2a75 0%, #ff609f 50%, #c084fc 100%);
   color: #ffffff;
-  font-size: 13.5px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 800;
   font-family: "Plus Jakarta Sans", sans-serif;
   letter-spacing: 0.02em;
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(183, 93, 78, 0.35);
-  transition: all 0.25s ease;
+  box-shadow: 
+    0 6px 25px rgba(255, 42, 117, 0.45),
+    inset 0 1px 2px rgba(255, 255, 255, 0.4);
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.submit-btn:hover:not(:disabled) {
-  box-shadow: 0 6px 24px rgba(183, 93, 78, 0.48);
-  transform: translateY(-1px);
+.rsvp-submit-btn:hover:not(:disabled) {
+  box-shadow: 0 8px 30px rgba(255, 42, 117, 0.6);
+  transform: translateY(-2px) scale(1.01);
 }
 
-.submit-btn:disabled {
+.rsvp-submit-btn:disabled {
   opacity: 0.45;
   cursor: not-allowed;
   transform: none;
 }
 
-/* ── RSVP Success State ─────────────────────────────────────── */
-.rsvp-ok-icon {
-  width: 54px;
-  height: 54px;
+/* ── 9. Nút Nhạc Đĩa Than Vinyl (Vinyl Record Player) ──────── */
+.vinyl-player-wrap {
+  position: fixed;
+  top: 18px;
+  right: 16px;
+  z-index: 55;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vinyl-disc {
+  position: relative;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background: var(--gold-bg);
-  border: 1px solid rgba(197, 160, 89, 0.3);
+  background: radial-gradient(
+    circle at 50% 50%,
+    #ff2a75 0%,
+    #e01058 18%,
+    #14050e 20%,
+    #2a0818 35%,
+    #14050e 38%,
+    #2a0818 55%,
+    #14050e 58%,
+    #300b1d 75%,
+    #ff2a75 100%
+  );
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.95),
+    0 0 0 3.5px rgba(255, 42, 117, 0.5),
+    0 6px 20px rgba(255, 42, 117, 0.45);
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 12px;
-  color: var(--gold-dark);
+  user-select: none;
+  border: none;
+  outline: none;
 }
 
-.rsvp-ok-title {
-  font-family: "Bricolage Grotesque", sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--rose-gold-dark);
-  margin-bottom: 4px;
+.vinyl-disc-grooves {
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+  pointer-events: none;
 }
 
-.rsvp-ok-sub {
-  font-size: 13px;
-  color: var(--text-muted);
+.vinyl-center-label {
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff2a75 0%, #ffcf56 100%);
+  border: 1.5px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
 }
 
-/* ── Floating Celebrate Button ──────────────────────────────── */
+.vinyl-tonearm {
+  position: absolute;
+  top: -3px;
+  right: -2px;
+  width: 14px;
+  height: 22px;
+  pointer-events: none;
+  transform-origin: top right;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ── 10. Nút Chúc Mừng Nổi (Floating Celebrate) ──────────────── */
 .floating-celebrate-btn {
   position: fixed;
   bottom: 24px;
@@ -879,80 +929,179 @@ body {
   z-index: 60;
   display: flex;
   align-items: center;
-  gap: 7px;
-  padding: 10px 18px;
+  gap: 8px;
+  padding: 11px 20px;
   border-radius: 99px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  background: linear-gradient(135deg, #b75d4e 0%, #c5a059 100%);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  background: linear-gradient(135deg, #ff2a75 0%, #ff609f 50%, #ffcf56 100%);
   color: #ffffff;
-  font-size: 12.5px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 800;
   cursor: pointer;
-  box-shadow: 0 6px 22px rgba(183, 93, 78, 0.45);
+  box-shadow: 
+    0 8px 25px rgba(255, 42, 117, 0.55),
+    inset 0 1px 3px rgba(255, 255, 255, 0.6);
   transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .floating-celebrate-btn:hover {
-  transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 8px 28px rgba(183, 93, 78, 0.55);
+  transform: translateY(-3px) scale(1.06);
+  box-shadow: 0 10px 32px rgba(255, 42, 117, 0.7);
 }
 
 .floating-celebrate-btn:active {
-  transform: scale(0.95);
+  transform: scale(0.94);
 }
 
-/* ── Toast Notification ─────────────────────────────────────── */
+/* ── 10. Thông Báo Toast (Toast Notification) ───────────────── */
 .toast-notice {
   position: fixed;
   top: 24px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 99;
-  padding: 10px 20px;
+  padding: 10px 22px;
+  max-width: calc(100vw - 32px);
   border-radius: 99px;
-  background: #231b18;
+  background: linear-gradient(135deg, #2e081c 0%, #541133 100%);
+  border: 1px solid rgba(255, 96, 159, 0.4);
   color: #ffffff;
   font-size: 12.5px;
-  font-weight: 600;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  font-weight: 700;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
 }
 
-/* ── Footer ─────────────────────────────────────────────────── */
-.site-footer {
-  padding: 36px 20px 48px;
+/* ── 11. Chân Thiệp (Footer) ────────────────────────────────── */
+.invitation-footer {
+  padding: 36px 20px 84px;
   text-align: center;
-  border-top: 1px solid var(--card-border-subtle);
+  border-top: 1.5px solid var(--border-pink);
   margin-top: 8px;
 }
 
-.footer-hearts {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  margin-bottom: 12px;
-}
-
-.footer-name {
+.footer-name-title {
   font-family: "Bricolage Grotesque", sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--rose-gold-dark);
+  font-size: 21px;
+  font-weight: 800;
+  color: var(--primary-pink-deep);
   margin-bottom: 3px;
 }
 
-.footer-meta {
-  font-size: 11px;
-  color: var(--text-faint);
+.footer-school-sub {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-light);
 }
 
-/* ── Admin Page Styles ──────────────────────────────────────── */
+/* ── 12. ReactBits Styles Tinh Chỉnh ───────────────────────── */
+.shiny-text {
+  color: var(--primary-pink);
+  background: linear-gradient(
+    120deg,
+    rgba(255, 42, 117, 0.95) 0%,
+    rgba(255, 42, 117, 0.95) 35%,
+    #ffffff 50%,
+    rgba(255, 42, 117, 0.95) 65%,
+    rgba(255, 42, 117, 0.95) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  animation: shine 3.5s linear infinite;
+}
+
+@keyframes shine {
+  0%   { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+.spotlight-card {
+  position: relative;
+  border-radius: var(--card-radius);
+  border: 1.5px solid var(--card-custom-border, var(--border-pink));
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  overflow: hidden;
+  box-shadow:
+    0 8px 30px rgba(255, 42, 117, 0.12),
+    0 2px 6px rgba(255, 96, 159, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.spotlight-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.spotlight-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+}
+
+.star-border-container {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: var(--card-radius);
+  padding: 2px;
+  background: rgba(255, 96, 159, 0.25);
+  box-shadow: 0 10px 30px rgba(255, 42, 117, 0.18);
+}
+
+.star-border-glow-top,
+.star-border-glow-bottom {
+  position: absolute;
+  width: 300%;
+  height: 300%;
+  top: -100%;
+  left: -100%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 60deg,
+    var(--star-color, #ff2a75) 120deg,
+    #ffcf56 180deg,
+    transparent 240deg,
+    transparent 360deg
+  );
+  animation: star-rotate var(--star-speed, 5s) linear infinite;
+  opacity: 0.85;
+}
+
+.star-border-glow-bottom {
+  animation-direction: reverse;
+  opacity: 0.55;
+}
+
+@keyframes star-rotate {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.star-border-inner {
+  position: relative;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: calc(var(--card-radius) - 2px);
+  backdrop-filter: blur(16px);
+  padding: 20px 18px;
+}
+
+/* ── 13. Admin Dashboard ────────────────────────────────────── */
 .admin-wrap {
   min-height: 100vh;
   padding: 20px;
-  background: linear-gradient(165deg, #181514 0%, #231b18 100%);
+  background: linear-gradient(165deg, #14050e 0%, #290818 100%);
   color: #ffffff;
 }
 
@@ -971,117 +1120,49 @@ body {
 .admin-title {
   font-family: "Bricolage Grotesque", sans-serif;
   font-size: 20px;
-  font-weight: 700;
-  color: #f7eedd;
-}
-
-.admin-refresh {
-  padding: 8px;
-  border-radius: 50%;
-  border: 1px solid rgba(197, 160, 89, 0.3);
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--gold-light);
-  cursor: pointer;
-}
-
-.admin-list-title {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-family: "Bricolage Grotesque", sans-serif;
-  font-size: 17px;
-  font-weight: 700;
-  color: #f7eedd;
-  margin-bottom: 12px;
+  font-weight: 800;
+  color: #ff82b6;
 }
 
 .admin-card {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(197, 160, 89, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 96, 159, 0.25);
   border-radius: 16px;
   padding: 16px;
 }
-
-.stat-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #c5a059;
-  margin-bottom: 4px;
-}
-
-.stat-num {
-  font-family: "Bricolage Grotesque", sans-serif;
-  font-size: 36px;
-  font-weight: 800;
-  color: #ffffff;
-}
-
-.stat-yes { color: #dfba73; font-weight: 600; }
-.stat-no  { color: #9c8b84; font-weight: 600; }
 
 .pie-chart {
   width: 80px;
   height: 80px;
   border-radius: 50%;
   background: conic-gradient(
-    #c5a059 var(--yes-pct, 0%),
-    rgba(255, 255, 255, 0.1) 0
+    #ff2a75 var(--yes-pct, 0%),
+    rgba(255, 255, 255, 0.12) 0
   );
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
-}
-
-.list-name {
-  font-weight: 600;
-  color: #ffffff;
-  font-size: 13.5px;
-}
-
-.list-time {
-  font-size: 10.5px;
-  color: #9c8b84;
-  margin-top: 2px;
+  box-shadow: 0 4px 16px rgba(255, 42, 117, 0.3);
 }
 
 .badge-yes {
   padding: 3px 10px;
   border-radius: 99px;
   font-size: 11px;
-  font-weight: 600;
-  background: rgba(197, 160, 89, 0.2);
-  color: #dfba73;
-  border: 1px solid rgba(197, 160, 89, 0.4);
+  font-weight: 700;
+  background: rgba(255, 42, 117, 0.25);
+  color: #ff82b6;
+  border: 1px solid rgba(255, 42, 117, 0.5);
 }
 
 .badge-no {
   padding: 3px 10px;
   border-radius: 99px;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   background: rgba(255, 255, 255, 0.08);
-  color: #9c8b84;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #b86f94;
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-.error-box {
-  padding: 14px;
-  border-radius: 12px;
-  background: rgba(183, 93, 78, 0.2);
-  color: #dfba73;
-  font-size: 13px;
-  text-align: center;
-  border: 1px solid rgba(183, 93, 78, 0.4);
-}
-
-.empty-text {
-  text-align: center;
-  padding: 40px 0;
-  color: #9c8b84;
-  font-size: 13px;
-}
-
-/* ── Scrollbar ──────────────────────────────────────────────── */
+/* ── Custom Pink Scrollbar ──────────────────────────────────── */
 ::-webkit-scrollbar {
   width: 4px;
 }
@@ -1089,6 +1170,6 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(197, 160, 89, 0.4);
+  background: rgba(255, 96, 159, 0.5);
   border-radius: 2px;
 }
