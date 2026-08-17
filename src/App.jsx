@@ -1,9 +1,10 @@
 import { useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import confetti from "canvas-confetti";
 import {
   GraduationCap,
   MapPin,
-  Calendar,
+  Calendar as CalendarIcon,
   Clock,
   Heart,
   Sparkles,
@@ -20,7 +21,10 @@ import {
   ShieldCheck,
   Users,
   RefreshCw,
-  MailOpen,
+  Share2,
+  CalendarPlus,
+  Compass,
+  Shirt,
 } from "lucide-react";
 import "./index.css";
 
@@ -32,11 +36,11 @@ const CONFIG = {
   major: "Logistics & Quản lý Chuỗi cung ứng",
   degree: "Cử nhân",
   university: "Trường Đại học Kinh Tế Tài Chính TP.HCM",
-  ceremonyDate: new Date(2026, 7, 27, 13, 0, 0),
-  ceremonyTime: "13:00",
+  ceremonyDate: new Date(2026, 7, 27, 13, 0, 0), // 27/08/2026 13:00
+  ceremonyTime: "13:00 (1 giờ chiều)",
   venue: "Hội trường lớn",
-  venueSub: "UEF — 141-145 Điện Biên Phủ, P.15, Q.Bình Thạnh",
-  venueAddress: "141 - 145 Điện Biên Phủ, P.15, Q.Bình Thạnh",
+  venueSub: "Trường ĐH Kinh Tế - Tài Chính TP.HCM (UEF)",
+  venueAddress: "141 - 145 Điện Biên Phủ, Phường 15, Quận Bình Thạnh, TP.HCM",
   photoUrl: "/portrait.png",
   defaultGuestName: "Quý khách",
   GOOGLE_SCRIPT_URL: import.meta.env.VITE_GOOGLE_SCRIPT_URL,
@@ -46,11 +50,12 @@ function getGuestName() {
   const p = new URLSearchParams(window.location.search);
   return p.get("to") || CONFIG.defaultGuestName;
 }
+
 function generateToken(name) {
   return btoa(encodeURIComponent(name)).slice(0, 10);
 }
 
-/* ── Countdown calc ───────────────────────────────────────────── */
+/* ── Countdown calculation ────────────────────────────────────── */
 function calcDiff(target) {
   const d = Math.max(0, target - Date.now());
   return {
@@ -61,66 +66,110 @@ function calcDiff(target) {
   };
 }
 
+/* ── Confetti Celebration Trigger ─────────────────────────────── */
+function fireCelebrationConfetti() {
+  confetti({
+    particleCount: 80,
+    spread: 70,
+    origin: { y: 0.6 },
+    colors: ["#c5a059", "#b75d4e", "#dfba73", "#f7eedd", "#e07a5f"],
+    shapes: ["circle", "square"],
+    ticks: 200,
+  });
+
+  setTimeout(() => {
+    confetti({
+      particleCount: 50,
+      angle: 60,
+      spread: 55,
+      origin: { x: 0, y: 0.7 },
+      colors: ["#c5a059", "#b75d4e", "#f3e9df"],
+    });
+    confetti({
+      particleCount: 50,
+      angle: 120,
+      spread: 55,
+      origin: { x: 1, y: 0.7 },
+      colors: ["#c5a059", "#b75d4e", "#f3e9df"],
+    });
+  }, 250);
+}
+
 /* ══════════════════════════════════════════════════════════════
-   PHOTO CAROUSEL
+   PHOTO CAROUSEL (Lucide arrows, smooth swipe)
    ══════════════════════════════════════════════════════════════ */
 const PHOTOS = [
-  { src: "/portrait.png", caption: "Mỹ Vy" },
-  { src: "/graduate-photo.png", caption: "Mỹ Vy" },
+  { src: "/portrait.png", caption: "Trịnh Thị Mỹ Vy" },
+  { src: "/graduate-photo.png", caption: "Lễ Tốt Nghiệp 2026" },
 ];
 
 function PhotoCarousel() {
   const [current, setCurrent] = useState(0);
-  const [dragging, setDragging] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const count = PHOTOS.length;
 
-  const go = (dir) => setCurrent((c) => (c + dir + count) % count);
+  const next = () => setCurrent((c) => (c + 1) % count);
+  const prev = () => setCurrent((c) => (c - 1 + count) % count);
+
+  useEffect(() => {
+    if (isHovered) return;
+    const timer = setInterval(() => {
+      next();
+    }, 4500);
+    return () => clearInterval(timer);
+  }, [isHovered, current]);
 
   return (
-    <section className="carousel-section">
+    <section
+      className="carousel-section"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <div className="carousel-track-wrap">
-        <motion.div
-          key={current}
-          initial={{ opacity: 0, x: dragging ? 0 : 30 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -30 }}
-          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-          drag="x"
-          dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={0.15}
-          onDragStart={() => setDragging(true)}
-          onDragEnd={(_, info) => {
-            setDragging(false);
-            if (info.offset.x < -40) go(1);
-            else if (info.offset.x > 40) go(-1);
-          }}
-          className="carousel-slide"
-          style={{ cursor: "grab" }}
-        >
-          <img
-            src={PHOTOS[current].src}
-            alt={PHOTOS[current].caption}
-            className="carousel-img"
-            draggable={false}
-          />
-          {/* subtle gradient overlay at bottom */}
-          <div className="carousel-overlay" />
-        </motion.div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={current}
+            initial={{ opacity: 0, scale: 1.03 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.2}
+            onDragEnd={(_, info) => {
+              if (info.offset.x < -35) next();
+              else if (info.offset.x > 35) prev();
+            }}
+            className="carousel-slide"
+            style={{ cursor: "grab" }}
+          >
+            <img
+              src={PHOTOS[current].src}
+              alt={PHOTOS[current].caption}
+              className="carousel-img"
+              draggable={false}
+            />
+            <div className="carousel-overlay" />
+            <div className="carousel-badge">
+              {PHOTOS[current].caption} · {current + 1}/{count}
+            </div>
+          </motion.div>
+        </AnimatePresence>
 
-        {/* Prev / Next arrows */}
+        {/* Prev / Next Lucide Arrows */}
         <button
           className="carousel-arrow carousel-arrow-left"
-          onClick={() => go(-1)}
+          onClick={prev}
           aria-label="Ảnh trước"
         >
-          <ChevronLeft size={18} strokeWidth={2} />
+          <ChevronLeft size={18} strokeWidth={2.2} />
         </button>
         <button
           className="carousel-arrow carousel-arrow-right"
-          onClick={() => go(1)}
+          onClick={next}
           aria-label="Ảnh sau"
         >
-          <ChevronRight size={18} strokeWidth={2} />
+          <ChevronRight size={18} strokeWidth={2.2} />
         </button>
       </div>
 
@@ -139,10 +188,13 @@ function PhotoCarousel() {
   );
 }
 
+/* ══════════════════════════════════════════════════════════════
+   SCROLL REVEAL WRAPPER
+   ══════════════════════════════════════════════════════════════ */
 function Reveal({ children, delay = 0, className = "" }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 22 }}
+      initial={{ opacity: 0, y: 18 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-20px" }}
       transition={{ duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] }}
@@ -154,11 +206,11 @@ function Reveal({ children, delay = 0, className = "" }) {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   SECTION TITLE  — modern, minimal
+   SECTION TITLE
    ══════════════════════════════════════════════════════════════ */
 function SectionTitle({ title, subtitle }) {
   return (
-    <div className="mb-5">
+    <div className="mb-4">
       <p className="section-label">{subtitle || "—"}</p>
       <h2 className="section-heading">{title}</h2>
     </div>
@@ -190,27 +242,27 @@ function Countdown({ target }) {
   ];
 
   return (
-    <div className="flex justify-center gap-3">
+    <div className="flex justify-center gap-2.5">
       {items.map((it, idx) => (
         <motion.div
           key={it.l}
-          initial={{ opacity: 0, y: 14 }}
+          initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{
-            delay: idx * 0.07,
+            delay: idx * 0.06,
             ease: [0.22, 1, 0.36, 1],
-            duration: 0.45,
+            duration: 0.4,
           }}
           className="cd-card"
         >
           <AnimatePresence mode="popLayout">
             <motion.span
               key={it.v}
-              initial={{ y: -8, opacity: 0 }}
+              initial={{ y: -6, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 8, opacity: 0 }}
-              transition={{ duration: 0.2 }}
+              exit={{ y: 6, opacity: 0 }}
+              transition={{ duration: 0.18 }}
               className="cd-num"
             >
               {String(it.v).padStart(2, "0")}
@@ -270,7 +322,7 @@ function MiniCalendar({ date }) {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ delay: i * 0.006 }}
+            transition={{ delay: i * 0.005 }}
             className={`cal-cell-wrap ${c === null ? "invisible" : ""}`}
           >
             <span className={c === day ? "cal-active" : "cal-day"}>{c}</span>
@@ -282,7 +334,140 @@ function MiniCalendar({ date }) {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   RSVP
+   INTERACTIVE WISHES & CELEBRATION (All Lucide Icons)
+   ══════════════════════════════════════════════════════════════ */
+function InteractiveActions() {
+  const [likes, setLikes] = useState(() => {
+    const saved = localStorage.getItem("myvy_grad_likes");
+    return saved ? parseInt(saved, 10) : 68;
+  });
+  const [floatingHearts, setFloatingHearts] = useState([]);
+  const [toast, setToast] = useState("");
+
+  const showToast = (msg) => {
+    setToast(msg);
+    setTimeout(() => setToast(""), 2800);
+  };
+
+  const handleSendHeart = (e) => {
+    const nextCount = likes + 1;
+    setLikes(nextCount);
+    localStorage.setItem("myvy_grad_likes", nextCount.toString());
+
+    // Spawn floating heart particle using Lucide Heart
+    const rect = e.currentTarget.getBoundingClientRect();
+    const id = Date.now() + Math.random();
+    const heart = {
+      id,
+      x: rect.left + rect.width / 2 - 9 + (Math.random() * 26 - 13),
+      y: rect.top,
+    };
+    setFloatingHearts((prev) => [...prev, heart]);
+    setTimeout(() => {
+      setFloatingHearts((prev) => prev.filter((h) => h.id !== id));
+    }, 1200);
+
+    if (nextCount % 5 === 0) {
+      confetti({
+        particleCount: 25,
+        spread: 40,
+        origin: { y: 0.8 },
+        colors: ["#b75d4e", "#c5a059", "#dfba73"],
+      });
+    }
+  };
+
+  const handleShare = async () => {
+    const shareData = {
+      title: "Thư mời Lễ tốt nghiệp — Trịnh Thị Mỹ Vy",
+      text: "Trân trọng kính mời bạn đến tham dự Lễ tốt nghiệp của Trịnh Thị Mỹ Vy vào ngày 27/08/2026 lúc 13:00!",
+      url: window.location.href,
+    };
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch {}
+    } else {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        showToast("Đã sao chép liên kết thư mời!");
+      } catch {
+        showToast("Không thể sao chép liên kết.");
+      }
+    }
+  };
+
+  const handleAddToCalendar = () => {
+    const title = encodeURIComponent("Lễ Tốt Nghiệp — Trịnh Thị Mỹ Vy");
+    const details = encodeURIComponent(
+      "Lễ Trao Bằng Tốt Nghiệp Cử nhân Logistics & Quản lý Chuỗi cung ứng — Trịnh Thị Mỹ Vy tại UEF Hội trường lớn.",
+    );
+    const location = encodeURIComponent(CONFIG.venueAddress);
+    const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=20260827T060000Z/20260827T090000Z&details=${details}&location=${location}`;
+    window.open(googleCalUrl, "_blank");
+  };
+
+  return (
+    <>
+      <div className="action-grid">
+        <button onClick={handleSendHeart} className="action-card-btn">
+          <Heart size={15} color="#b75d4e" fill="#b75d4e" strokeWidth={0} />
+          <span>Gửi tim ({likes})</span>
+        </button>
+
+        <button onClick={handleAddToCalendar} className="action-card-btn">
+          <CalendarPlus size={15} color="#c5a059" strokeWidth={2} />
+          <span>Lưu vào Lịch</span>
+        </button>
+
+        <button
+          onClick={() => {
+            fireCelebrationConfetti();
+            showToast("Chúc mừng Tân Cử Nhân Trịnh Thị Mỹ Vy!");
+          }}
+          className="action-card-btn btn-celebrate"
+        >
+          <PartyPopper size={15} color="#b75d4e" strokeWidth={2} />
+          <span>Bắn pháo hoa</span>
+        </button>
+
+        <button onClick={handleShare} className="action-card-btn">
+          <Share2 size={15} color="#6c5b54" strokeWidth={2} />
+          <span>Chia sẻ thiệp</span>
+        </button>
+      </div>
+
+      {/* Floating hearts rendered in fixed position using Lucide Heart */}
+      {floatingHearts.map((h) => (
+        <div
+          key={h.id}
+          className="floating-heart"
+          style={{ left: h.x, top: h.y }}
+        >
+          <Heart size={18} fill="#b75d4e" color="#b75d4e" strokeWidth={0} />
+        </div>
+      ))}
+
+      {/* Toast Notice */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="toast-notice"
+          >
+            <Sparkles size={15} color="#dfba73" />
+            <span>{toast}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RSVP SECTION
    ══════════════════════════════════════════════════════════════ */
 function RSVPSection({ guestName }) {
   const [name, setName] = useState(
@@ -343,6 +528,7 @@ function RSVPSection({ guestName }) {
         { name: name.trim(), status, timestamp: new Date().toISOString() },
       ]);
       setSubmitted(true);
+      fireCelebrationConfetti();
     } catch {
       alert("Có lỗi xảy ra. Vui lòng thử lại!");
     } finally {
@@ -361,10 +547,13 @@ function RSVPSection({ guestName }) {
               transition={{ type: "spring", bounce: 0.45 }}
               className="rsvp-ok-icon"
             >
-              <CheckCircle2 size={26} strokeWidth={1.5} />
+              <CheckCircle2 size={28} strokeWidth={2} />
             </motion.div>
-            <p className="rsvp-ok-title">Đã ghi nhận!</p>
-            <p className="rsvp-ok-sub">Cảm ơn bạn đã xác nhận tham dự.</p>
+            <p className="rsvp-ok-title">Đã xác nhận thành công!</p>
+            <p className="rsvp-ok-sub">
+              Cảm ơn <strong>{name || guestName}</strong> đã phản hồi. Rất mong
+              được đón tiếp bạn tại buổi lễ!
+            </p>
           </div>
         </Reveal>
       </section>
@@ -376,7 +565,7 @@ function RSVPSection({ guestName }) {
       <Reveal>
         <SectionTitle title="Xác nhận tham dự" subtitle="RSVP" />
       </Reveal>
-      <Reveal delay={0.08}>
+      <Reveal delay={0.06}>
         <div className="card">
           {/* Name input */}
           <div className="mb-4">
@@ -385,29 +574,31 @@ function RSVPSection({ guestName }) {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Nhập tên..."
+              placeholder="Nhập tên của bạn..."
               className="modern-input"
             />
             {isNameExist && (
-              <p className="input-hint">Tên này đã xác nhận tham dự.</p>
+              <p className="input-hint">
+                Tên này đã có trong danh sách xác nhận.
+              </p>
             )}
           </div>
 
           {/* Status buttons */}
-          <div className="flex gap-2 mb-5">
+          <div className="flex gap-2.5 mb-5">
             <button
               onClick={() => setStatus("Tham dự")}
               className={`rsvp-btn ${status === "Tham dự" ? "rsvp-yes" : "rsvp-idle"}`}
             >
-              <CheckCircle2 size={15} strokeWidth={1.8} />
-              Tham dự
+              <CheckCircle2 size={15} strokeWidth={2} />
+              Sẽ tham dự
             </button>
             <button
               onClick={() => setStatus("Không tham dự")}
               className={`rsvp-btn ${status === "Không tham dự" ? "rsvp-no" : "rsvp-idle"}`}
             >
-              <XCircle size={15} strokeWidth={1.8} />
-              Không thể đến
+              <XCircle size={15} strokeWidth={2} />
+              Bận, không thể đến
             </button>
           </div>
 
@@ -418,11 +609,11 @@ function RSVPSection({ guestName }) {
             className="submit-btn"
           >
             {isSubmitting ? (
-              <Loader2 size={15} className="animate-spin" />
+              <Loader2 size={16} className="animate-spin" />
             ) : (
-              <Send size={15} strokeWidth={1.8} />
+              <Send size={16} strokeWidth={2} />
             )}
-            {isSubmitting ? "Đang gửi..." : "Gửi xác nhận"}
+            {isSubmitting ? "Đang gửi thông tin..." : "Gửi xác nhận tham dự"}
           </button>
         </div>
       </Reveal>
@@ -431,7 +622,7 @@ function RSVPSection({ guestName }) {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   ADMIN
+   ADMIN DASHBOARD
    ══════════════════════════════════════════════════════════════ */
 function AdminPage() {
   const [data, setData] = useState([]);
@@ -447,13 +638,14 @@ function AdminPage() {
       const res = await fetch(CONFIG.GOOGLE_SCRIPT_URL);
       const json = await res.json();
       if (json.status === "success") setData(json.data.reverse());
-      else throw new Error("Lỗi từ server");
+      else throw new Error("Lỗi phản hồi từ server");
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -468,48 +660,53 @@ function AdminPage() {
       <div className="admin-inner">
         <div className="admin-header">
           <div className="flex items-center gap-2">
-            <ShieldCheck size={20} strokeWidth={1.8} color="#ec4899" />
+            <ShieldCheck size={22} strokeWidth={2} color="#dfba73" />
             <h1 className="admin-title">Admin Dashboard</h1>
           </div>
-          <button onClick={fetchData} className="admin-refresh">
-            <RefreshCw
-              size={15}
-              color="#ec4899"
-              className={loading ? "animate-spin" : ""}
-            />
+          <button
+            onClick={fetchData}
+            className="admin-refresh"
+            aria-label="Tải lại"
+          >
+            <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
           </button>
         </div>
 
-        <div className="card flex items-center justify-between mb-5 p-5">
+        <div className="admin-card flex items-center justify-between mb-5 p-5">
           <div>
             <p className="stat-label">Tổng phản hồi</p>
             <p className="stat-num">{total}</p>
             <div className="flex gap-4 mt-2 text-[12px]">
-              <span className="stat-yes">✓ Có: {yesCount}</span>
-              <span className="stat-no">✗ Không: {noCount}</span>
+              <span className="stat-yes flex items-center gap-1">
+                <CheckCircle2 size={13} /> Tham dự: {yesCount}
+              </span>
+              <span className="stat-no flex items-center gap-1">
+                <XCircle size={13} /> Không: {noCount}
+              </span>
             </div>
           </div>
           <div className="pie-chart" style={{ "--yes-pct": `${yesPct}%` }} />
         </div>
 
         <h2 className="admin-list-title">
-          <Users size={16} color="#ec4899" strokeWidth={1.8} /> Danh sách
+          <Users size={16} color="#dfba73" strokeWidth={2} /> Danh sách khách
+          mời
         </h2>
 
         {loading ? (
           <div className="flex justify-center py-10">
-            <Loader2 size={22} className="animate-spin" color="#ec4899" />
+            <Loader2 size={24} className="animate-spin text-[#dfba73]" />
           </div>
         ) : error ? (
           <div className="error-box">{error}</div>
         ) : data.length === 0 ? (
-          <p className="empty-text">Chưa có dữ liệu.</p>
+          <p className="empty-text">Chưa có phản hồi nào.</p>
         ) : (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2.5">
             {data.map((item, idx) => (
               <div
                 key={idx}
-                className="card p-4 flex items-center justify-between"
+                className="admin-card p-4 flex items-center justify-between"
               >
                 <div>
                   <p className="list-name">{item.name}</p>
@@ -534,7 +731,7 @@ function AdminPage() {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   MAIN APP
+   MAIN APPLICATION
    ══════════════════════════════════════════════════════════════ */
 export default function App() {
   const p = new URLSearchParams(window.location.search);
@@ -543,9 +740,30 @@ export default function App() {
 
   const guestName = useMemo(() => getGuestName(), []);
 
+  // Initial welcome confetti burst
+  useEffect(() => {
+    const t = setTimeout(() => {
+      confetti({
+        particleCount: 45,
+        spread: 60,
+        origin: { y: 0.25 },
+        colors: ["#c5a059", "#b75d4e", "#f7eedd"],
+      });
+    }, 750);
+    return () => clearTimeout(t);
+  }, []);
+
   const details = [
-    { icon: Calendar, label: "Ngày", value: "Thứ Năm, 27 tháng 8 năm 2026" },
-    { icon: Clock, label: "Thời gian", value: "13:00 (1 giờ chiều)" },
+    {
+      icon: CalendarIcon,
+      label: "Ngày tổ chức",
+      value: "Thứ Năm, 27 tháng 8 năm 2026",
+    },
+    {
+      icon: Clock,
+      label: "Thời gian",
+      value: CONFIG.ceremonyTime,
+    },
     {
       icon: MapPin,
       label: "Địa điểm",
@@ -554,7 +772,7 @@ export default function App() {
     },
     {
       icon: BookOpen,
-      label: "Ngành học",
+      label: "Chuyên ngành",
       value: `${CONFIG.degree} — ${CONFIG.major}`,
     },
   ];
@@ -562,22 +780,22 @@ export default function App() {
   return (
     <div className="page-root">
       <div className="site-card">
-        {/* ── HERO ─────────────────────────────────────────────── */}
+        {/* ── HERO SECTION ─────────────────────────────────────── */}
         <section className="hero">
           {/* Pill badge */}
           <motion.div
-            initial={{ opacity: 0, y: -12 }}
+            initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45 }}
             className="hero-badge"
           >
-            <GraduationCap size={13} strokeWidth={2} />
+            <GraduationCap size={13} strokeWidth={2.2} />
             Thư mời tốt nghiệp
           </motion.div>
 
-          {/* Portrait — simple oval frame */}
+          {/* Portrait frame */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.92 }}
+            initial={{ opacity: 0, scale: 0.94 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{
               duration: 0.65,
@@ -595,11 +813,11 @@ export default function App() {
             </div>
           </motion.div>
 
-          {/* Name + info */}
+          {/* Name & Academic info */}
           <motion.div
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.3 }}
+            transition={{ duration: 0.55, delay: 0.25 }}
             className="hero-text"
           >
             <h1 className="hero-name">{CONFIG.graduateName}</h1>
@@ -610,30 +828,39 @@ export default function App() {
           </motion.div>
         </section>
 
-        {/* ── GUEST CARD ───────────────────────────────────────── */}
+        {/* ── GUEST INVITATION CARD ────────────────────────────── */}
         <section className="section">
           <Reveal>
             <div className="guest-card">
               <p className="guest-label">Trân trọng kính mời</p>
               <p className="guest-name">{guestName}</p>
-              <p className="guest-sub">đến tham dự buổi lễ tốt nghiệp</p>
+              <p className="guest-sub">
+                Đến chung vui cùng Mỹ Vy trong ngày Lễ tốt nghiệp cử nhân
+              </p>
             </div>
+          </Reveal>
+
+          {/* Interactive Utility Bar (All Lucide Icons) */}
+          <Reveal delay={0.08}>
+            <InteractiveActions />
           </Reveal>
         </section>
 
         <Divider />
 
         {/* ── PHOTO CAROUSEL ───────────────────────────────────── */}
-        <PhotoCarousel />
+        <Reveal>
+          <PhotoCarousel />
+        </Reveal>
 
         <Divider />
-        {/* -- COUNTDOWN ----------------------------------------- */}
 
+        {/* ── COUNTDOWN ────────────────────────────────────────── */}
         <section className="section">
           <Reveal>
             <SectionTitle title="Đếm ngược đến ngày lễ" subtitle="COUNTDOWN" />
           </Reveal>
-          <Reveal delay={0.08}>
+          <Reveal delay={0.06}>
             <Countdown target={CONFIG.ceremonyDate} />
           </Reveal>
         </section>
@@ -649,28 +876,30 @@ export default function App() {
 
         <Divider />
 
-        {/* ── DETAILS ──────────────────────────────────────────── */}
+        {/* ── PROGRAM & DETAILS ────────────────────────────────── */}
         <section className="section">
           <Reveal>
             <SectionTitle title="Thông tin buổi lễ" subtitle="EVENT DETAILS" />
           </Reveal>
-          <Reveal delay={0.08}>
+          <Reveal delay={0.06}>
             <div className="card">
               {details.map((d, i) => (
                 <motion.div
                   key={d.label}
-                  initial={{ opacity: 0, x: -12 }}
+                  initial={{ opacity: 0, x: -10 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{
-                    delay: i * 0.07,
+                    delay: i * 0.06,
                     ease: [0.22, 1, 0.36, 1],
                     duration: 0.4,
                   }}
-                  className={`detail-row ${i < details.length - 1 ? "detail-border" : ""}`}
+                  className={`detail-row ${
+                    i < details.length - 1 ? "detail-border" : ""
+                  }`}
                 >
                   <div className="detail-icon">
-                    <d.icon size={15} strokeWidth={1.8} />
+                    <d.icon size={16} strokeWidth={2} />
                   </div>
                   <div>
                     <p className="detail-label">{d.label}</p>
@@ -682,21 +911,24 @@ export default function App() {
             </div>
           </Reveal>
 
-          <Reveal delay={0.14}>
+          {/* Map Link */}
+          <Reveal delay={0.1}>
             <a
-              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CONFIG.venueAddress)}`}
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                CONFIG.venueAddress,
+              )}`}
               target="_blank"
               rel="noopener noreferrer"
               className="map-link"
             >
               <div className="detail-icon">
-                <MapPin size={14} strokeWidth={1.8} />
+                <Compass size={16} strokeWidth={2} />
               </div>
               <span className="map-text">{CONFIG.venueAddress}</span>
               <ExternalLink
-                size={13}
-                strokeWidth={1.8}
-                style={{ flexShrink: 0, opacity: 0.5 }}
+                size={14}
+                strokeWidth={2}
+                style={{ flexShrink: 0, opacity: 0.55 }}
               />
             </a>
           </Reveal>
@@ -713,23 +945,23 @@ export default function App() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
+            transition={{ duration: 0.6 }}
           >
             <div className="footer-hearts">
               {[0, 1, 2].map((i) => (
                 <motion.div
                   key={i}
-                  animate={{ scale: [1, 1.3, 1] }}
+                  animate={{ scale: [1, 1.25, 1] }}
                   transition={{
-                    duration: 2,
+                    duration: 2.2,
                     delay: i * 0.35,
                     repeat: Infinity,
                   }}
                 >
                   <Heart
-                    size={12}
-                    fill="#ec4899"
-                    color="#ec4899"
+                    size={13}
+                    fill="#c5a059"
+                    color="#c5a059"
                     strokeWidth={0}
                   />
                 </motion.div>
@@ -740,20 +972,15 @@ export default function App() {
           </motion.div>
         </footer>
 
-        {/* Scroll cue */}
-        <motion.div
-          initial={{ opacity: 1 }}
-          animate={{ opacity: 0 }}
-          transition={{ delay: 4, duration: 1 }}
-          className="scroll-cue"
+        {/* Floating Celebration Trigger Button */}
+        <button
+          onClick={fireCelebrationConfetti}
+          className="floating-celebrate-btn"
+          aria-label="Bắn pháo hoa chúc mừng"
         >
-          <motion.div
-            animate={{ y: [0, 5, 0] }}
-            transition={{ duration: 1.2, repeat: Infinity }}
-          >
-            <ChevronDown size={18} strokeWidth={1.5} />
-          </motion.div>
-        </motion.div>
+          <Sparkles size={16} />
+          <span>Chúc mừng</span>
+        </button>
       </div>
     </div>
   );

@@ -1,21 +1,39 @@
-@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Bricolage+Grotesque:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Bricolage+Grotesque:wght@400;500;600;700;800&display=swap");
 @import "tailwindcss";
 
 /* ═══════════════════════════════════════════════════════════════
-   TOKENS
+   PRESTIGE ROSE GOLD & CHAMPAGNE SILK DESIGN SYSTEM
    ═══════════════════════════════════════════════════════════════ */
 :root {
-  --pink: #ec4899;
-  --pink-lt: #f9a8d4;
-  --pink-pale: #fce7f3;
-  --pink-bg: #fff0f8;
-  --rose: #be185d;
-  --text: #1e0a14;
-  --text-2: #6b3555;
-  --text-3: #c084a0;
-  --border: rgba(236, 72, 153, 0.16);
-  --card-bg: rgba(255, 255, 255, 0.88);
-  --radius: 16px;
+  /* Primary Rose Gold Palette */
+  --rose-gold:       #b75d4e;
+  --rose-gold-light: #c97463;
+  --rose-gold-dark:  #8f3e30;
+  --rose-gold-subtle:#f6e8e5;
+  --rose-gold-glow:  rgba(183, 93, 78, 0.16);
+
+  /* Champagne & Metallic Gold */
+  --gold:            #c5a059;
+  --gold-light:      #dfba73;
+  --gold-dark:       #96722d;
+  --gold-bg:         #faf3e6;
+  --gold-glow:       rgba(197, 160, 89, 0.2);
+
+  /* Canvas & Card Surfaces */
+  --bg-desktop:      #181514;
+  --card-bg:         rgba(253, 251, 247, 0.94);
+  --card-surface:    #ffffff;
+  --card-border:     rgba(197, 160, 89, 0.22);
+  --card-border-subtle: rgba(183, 93, 78, 0.12);
+
+  /* Typography */
+  --text-main:       #231b18;
+  --text-muted:      #6c5b54;
+  --text-faint:      #9c8b84;
+  --text-gold:       #a37d36;
+
+  --radius:          18px;
+  --radius-sm:       12px;
 }
 
 /* ── Reset & base ──────────────────────────────────────────── */
@@ -26,63 +44,70 @@
   margin: 0;
   padding: 0;
 }
+
 html {
   scroll-behavior: smooth;
 }
+
 body {
-  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
   font-size: 14px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  background: #fce4f3;
+  background-color: var(--bg-desktop);
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(197, 160, 89, 0.15) 0%, transparent 60%),
+    radial-gradient(circle at 50% 100%, rgba(183, 93, 78, 0.12) 0%, transparent 60%);
   min-height: 100vh;
-  color: var(--text);
+  color: var(--text-main);
   overflow-x: hidden;
 }
 
-/* ── Animations ────────────────────────────────────────────── */
+/* ── Custom Animations ──────────────────────────────────────── */
 @keyframes float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
-}
-@keyframes shimmer-border {
-  0% {
-    opacity: 0.6;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.6;
-  }
-}
-@keyframes pulse-dot {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.55);
-  }
-  60% {
-    box-shadow: 0 0 0 10px rgba(236, 72, 153, 0);
-  }
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-7px); }
 }
 
-/* ── Page ──────────────────────────────────────────────────────
-   Fills the full viewport. On desktop, the card is centred.
-   ─────────────────────────────────────────────────────────── */
+@keyframes pulse-gold {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(197, 160, 89, 0.6); }
+  60%      { box-shadow: 0 0 0 10px rgba(197, 160, 89, 0); }
+}
+
+@keyframes shimmer-gold {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes fly-up {
+  0%   { opacity: 1; transform: translateY(0) scale(0.8) rotate(0deg); }
+  50%  { opacity: 0.9; transform: translateY(-40px) scale(1.1) rotate(-10deg); }
+  100% { opacity: 0; transform: translateY(-90px) scale(0.6) rotate(15deg); }
+}
+
+.floating-heart {
+  position: absolute;
+  pointer-events: none;
+  animation: fly-up 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  z-index: 99;
+}
+
+/* ── Page Layout (Centered mobile-first container) ─────────── */
 .page-root {
   position: relative;
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  padding: 0;
 }
 
-/* Inner card — phone-width, centres on desktop */
+@media (min-width: 640px) {
+  .page-root {
+    padding: 24px 0;
+  }
+}
+
 .site-card {
   position: relative;
   z-index: 1;
@@ -90,137 +115,53 @@ body {
   max-width: 430px;
   min-height: 100vh;
   background: linear-gradient(
-    165deg,
-    #fff8fc 0%,
-    #fce4f3 40%,
-    #fff4fb 70%,
-    #fff8f5 100%
+    175deg,
+    #fffdfb 0%,
+    #fbf7f2 28%,
+    #f8f2eb 65%,
+    #f3e9df 100%
   );
-  box-shadow: 0 0 80px rgba(236, 72, 153, 0.1);
+  box-shadow: 
+    0 0 0 1px rgba(197, 160, 89, 0.25),
+    0 25px 80px rgba(0, 0, 0, 0.45);
 }
 
-/* ── Carousel ───────────────────────────────────────────────── */
-.carousel-section {
-  padding: 0;
-  overflow: hidden;
-}
-.carousel-track-wrap {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 4/5;
-  overflow: hidden;
-  background: var(--pink-pale);
-}
-.carousel-slide {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  touch-action: pan-y;
-}
-.carousel-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top center;
-  display: block;
-  user-select: none;
-  -webkit-user-drag: none;
-}
-.carousel-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    180deg,
-    transparent 55%,
-    rgba(190, 24, 93, 0.12) 100%
-  );
-  pointer-events: none;
-}
-/* arrows */
-.carousel-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: none;
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(8px);
-  color: var(--pink);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 2px 12px rgba(236, 72, 153, 0.18);
-  transition: background 0.18s, transform 0.18s;
-}
-.carousel-arrow:hover {
-  background: #fff;
-  transform: translateY(-50%) scale(1.08);
-}
-.carousel-arrow:active {
-  transform: translateY(-50%) scale(0.94);
-}
-.carousel-arrow-left  { left: 12px; }
-.carousel-arrow-right { right: 12px; }
-/* dots */
-.carousel-dots {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  padding: 12px 0 10px;
-}
-.carousel-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  border: none;
-  background: var(--pink-lt);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  padding: 0;
-}
-.carousel-dot-active {
-  width: 20px;
-  border-radius: 3px;
-  background: var(--pink);
+@media (min-width: 640px) {
+  .site-card {
+    min-height: auto;
+    border-radius: 28px;
+    overflow: hidden;
+  }
 }
 
-
-/* ── Float anim util ────────────────────────────────────────── */
-.float-anim {
-  animation: float var(--dur, 4s) var(--delay, 0s) ease-in-out infinite;
-}
-
-/* ── Hero ───────────────────────────────────────────────────── */
+/* ── Hero Section ───────────────────────────────────────────── */
 .hero {
   position: relative;
-  padding: 52px 24px 32px;
+  padding: 46px 24px 30px;
   text-align: center;
   background: linear-gradient(
     180deg,
-    rgba(252, 231, 243, 0.7) 0%,
-    rgba(255, 240, 251, 0.3) 100%
+    rgba(247, 238, 221, 0.75) 0%,
+    rgba(253, 251, 247, 0.4) 100%
   );
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--card-border-subtle);
   overflow: hidden;
 }
+
 .hero::before {
   content: "";
   position: absolute;
-  top: -60px;
+  top: -70px;
   left: 50%;
   transform: translateX(-50%);
-  width: 320px;
-  height: 320px;
+  width: 340px;
+  height: 340px;
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    rgba(244, 114, 182, 0.12) 0%,
-    transparent 65%
+    rgba(223, 186, 115, 0.18) 0%,
+    rgba(183, 93, 78, 0.08) 45%,
+    transparent 70%
   );
   pointer-events: none;
 }
@@ -232,45 +173,50 @@ body {
   gap: 6px;
   padding: 6px 16px;
   border-radius: 99px;
-  background: rgba(255, 255, 255, 0.75);
-  border: 1px solid rgba(236, 72, 153, 0.28);
-  color: var(--pink);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--card-border);
+  color: var(--rose-gold);
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   backdrop-filter: blur(8px);
-  margin-bottom: 28px;
-  box-shadow: 0 2px 10px rgba(236, 72, 153, 0.12);
+  margin-bottom: 24px;
+  box-shadow: 0 2px 12px var(--rose-gold-glow);
 }
 
-/* ── Portrait — simple elegant oval ────────────────────────── */
+/* ── Portrait Frame ─────────────────────────────────────────── */
 .portrait-wrap {
   display: flex;
   justify-content: center;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
+  position: relative;
 }
+
 .portrait-frame {
   position: relative;
-  width: min(200px, 55vw);
-  border-radius: 50% 50% 44% 44%;
+  width: min(200px, 54vw);
+  border-radius: 50% 50% 46% 46%;
   overflow: hidden;
-  border: 2.5px solid rgba(236, 72, 153, 0.35);
+  border: 3px solid rgba(197, 160, 89, 0.45);
+  background: linear-gradient(180deg, #f7eedd 0%, #ecd8c9 100%);
   box-shadow:
-    0 0 0 6px rgba(236, 72, 153, 0.07),
-    0 12px 40px rgba(236, 72, 153, 0.18);
+    0 0 0 6px rgba(197, 160, 89, 0.12),
+    0 16px 36px rgba(183, 93, 78, 0.18);
 }
+
 .portrait-frame::after {
   content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(
     180deg,
-    transparent 55%,
-    rgba(252, 231, 243, 0.25) 100%
+    transparent 60%,
+    rgba(183, 93, 78, 0.15) 100%
   );
   pointer-events: none;
 }
+
 .portrait-img {
   display: block;
   width: 100%;
@@ -283,46 +229,54 @@ body {
 .hero-text {
   padding: 0 4px;
 }
+
 .hero-name {
   font-family: "Bricolage Grotesque", sans-serif;
-  font-size: clamp(1.75rem, 6.5vw, 2.4rem);
-  font-weight: 700;
-  color: var(--rose);
+  font-size: clamp(1.85rem, 7vw, 2.45rem);
+  font-weight: 800;
+  color: var(--text-main);
   letter-spacing: -0.03em;
-  line-height: 1.1;
+  line-height: 1.12;
   margin-bottom: 8px;
+  background: linear-gradient(135deg, #231b18 20%, #b75d4e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
+
 .hero-sub {
-  font-size: 12px;
-  color: var(--text-2);
-  letter-spacing: 0.01em;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--rose-gold);
+  letter-spacing: 0.02em;
   margin-bottom: 3px;
 }
+
 .hero-univ {
-  font-size: 11px;
-  color: var(--text-3);
+  font-size: 11.5px;
+  color: var(--text-muted);
+  letter-spacing: 0.01em;
 }
 
 /* ── Sections ───────────────────────────────────────────────── */
 .section {
-  padding: 20px 20px;
+  padding: 22px 20px;
 }
 
-/* ── Section title ──────────────────────────────────────────── */
 .section-label {
   font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
+  font-weight: 700;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--pink-lt);
+  color: var(--gold-dark);
   margin-bottom: 4px;
 }
+
 .section-heading {
   font-family: "Bricolage Grotesque", sans-serif;
-  font-size: 1.25rem;
+  font-size: 1.3rem;
   font-weight: 700;
-  color: var(--rose);
-  letter-spacing: -0.02em;
+  color: var(--text-main);
+  letter-spacing: -0.025em;
   line-height: 1.2;
 }
 
@@ -333,21 +287,22 @@ body {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(236, 72, 153, 0.22),
+    rgba(197, 160, 89, 0.3),
+    rgba(183, 93, 78, 0.25),
     transparent
   );
 }
 
-/* ── Card ───────────────────────────────────────────────────── */
+/* ── Card Containers ────────────────────────────────────────── */
 .card {
   background: var(--card-bg);
-  border: 1px solid var(--border);
+  border: 1px solid var(--card-border);
   border-radius: var(--radius);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(14px);
   box-shadow:
-    0 4px 24px rgba(236, 72, 153, 0.07),
-    0 1px 4px rgba(236, 72, 153, 0.06);
-  padding: 16px;
+    0 4px 20px rgba(183, 93, 78, 0.05),
+    0 1px 4px rgba(197, 160, 89, 0.08);
+  padding: 18px;
 }
 
 /* ── Guest card ─────────────────────────────────────────────── */
@@ -357,43 +312,167 @@ body {
   border-radius: var(--radius);
   background: linear-gradient(
     145deg,
-    rgba(252, 231, 243, 0.85),
-    rgba(255, 240, 251, 0.7)
+    rgba(255, 255, 255, 0.92) 0%,
+    rgba(247, 238, 221, 0.8) 100%
   );
-  border: 1px solid rgba(236, 72, 153, 0.25);
-  box-shadow: 0 6px 24px rgba(236, 72, 153, 0.1);
+  border: 1px solid var(--card-border);
+  box-shadow:
+    0 8px 26px rgba(183, 93, 78, 0.07),
+    0 1px 3px rgba(197, 160, 89, 0.12);
 }
+
 .guest-label {
   font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
+  font-weight: 700;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--pink-lt);
+  color: var(--gold-dark);
   margin-bottom: 8px;
 }
+
 .guest-name {
   font-family: "Bricolage Grotesque", sans-serif;
-  font-size: clamp(1.5rem, 5.5vw, 1.9rem);
-  font-weight: 700;
-  color: var(--rose);
+  font-size: clamp(1.55rem, 5.8vw, 1.95rem);
+  font-weight: 800;
+  color: var(--rose-gold-dark);
   letter-spacing: -0.025em;
   line-height: 1.15;
   margin-bottom: 6px;
 }
+
 .guest-sub {
   font-size: 13px;
-  color: var(--text-2);
+  color: var(--text-muted);
+}
+
+/* ── Carousel ───────────────────────────────────────────────── */
+.carousel-section {
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.carousel-track-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/5;
+  overflow: hidden;
+  background: #f1e6da;
+}
+
+.carousel-slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: pan-y;
+}
+
+.carousel-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.carousel-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 60%,
+    rgba(35, 27, 24, 0.45) 100%
+  );
+  pointer-events: none;
+}
+
+.carousel-badge {
+  position: absolute;
+  bottom: 14px;
+  left: 16px;
+  padding: 4px 10px;
+  border-radius: 99px;
+  background: rgba(35, 27, 24, 0.65);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+/* Carousel Arrows */
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(8px);
+  color: var(--rose-gold-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.carousel-arrow:hover {
+  background: #ffffff;
+  transform: translateY(-50%) scale(1.08);
+}
+
+.carousel-arrow:active {
+  transform: translateY(-50%) scale(0.92);
+}
+
+.carousel-arrow-left  { left: 12px; }
+.carousel-arrow-right { right: 12px; }
+
+/* Carousel Dots */
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 0 8px;
+}
+
+.carousel-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: none;
+  background: #d8c6b9;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  padding: 0;
+}
+
+.carousel-dot-active {
+  width: 22px;
+  border-radius: 4px;
+  background: var(--rose-gold);
 }
 
 /* ── Countdown ──────────────────────────────────────────────── */
 .cd-card {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
   width: 72px;
   padding: 12px 0;
   text-align: center;
-  box-shadow: 0 2px 12px rgba(236, 72, 153, 0.08);
+  box-shadow:
+    0 4px 12px rgba(183, 93, 78, 0.05),
+    0 1px 3px rgba(197, 160, 89, 0.08);
   position: relative;
   overflow: hidden;
   display: flex;
@@ -401,22 +480,24 @@ body {
   align-items: center;
   gap: 4px;
 }
+
 .cd-num {
   display: block;
   font-family: "Bricolage Grotesque", sans-serif;
   font-size: 26px;
-  font-weight: 700;
-  color: var(--pink);
+  font-weight: 800;
+  color: var(--rose-gold);
   line-height: 1;
   letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
 }
+
 .cd-label {
   font-size: 9px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--text-3);
+  color: var(--text-faint);
 }
 
 /* ── Calendar ───────────────────────────────────────────────── */
@@ -425,33 +506,39 @@ body {
   grid-template-columns: repeat(7, 1fr);
   gap: 3px;
 }
+
 .cal-month {
   font-family: "Bricolage Grotesque", sans-serif;
   font-size: 14px;
   font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--rose);
+  letter-spacing: -0.01em;
+  color: var(--rose-gold-dark);
   text-align: center;
   margin-bottom: 14px;
 }
+
 .cal-head {
   font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  color: var(--text-3);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
   text-align: center;
   padding: 4px 0;
 }
+
 .cal-cell-wrap {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 3px 0;
 }
+
 .cal-day {
-  font-size: 11px;
-  color: var(--text-2);
+  font-size: 11.5px;
+  color: var(--text-muted);
+  font-weight: 500;
 }
+
 .cal-active {
   display: flex;
   align-items: center;
@@ -459,118 +546,232 @@ body {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: var(--pink);
+  background: linear-gradient(135deg, #c5a059 0%, #b75d4e 100%);
   color: white;
-  font-size: 11px;
-  font-weight: 600;
-  animation: pulse-dot 2s infinite;
+  font-size: 11.5px;
+  font-weight: 700;
+  animation: pulse-gold 2.4s infinite;
+  box-shadow: 0 3px 8px rgba(183, 93, 78, 0.3);
 }
 
-/* ── Detail rows ────────────────────────────────────────────── */
+/* ── Detail Rows ────────────────────────────────────────────── */
 .detail-row {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
-  padding: 12px 0;
+  gap: 14px;
+  padding: 13px 0;
 }
+
 .detail-border {
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--card-border-subtle);
 }
+
 .detail-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: var(--pink-pale);
-  border: 1px solid rgba(236, 72, 153, 0.2);
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--gold-bg);
+  border: 1px solid rgba(197, 160, 89, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: var(--pink);
+  color: var(--gold-dark);
 }
+
 .detail-label {
-  font-size: 9px;
-  font-weight: 600;
+  font-size: 9.5px;
+  font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--text-3);
+  color: var(--text-faint);
   margin-bottom: 2px;
 }
+
 .detail-value {
   font-size: 13px;
-  font-weight: 500;
-  color: var(--text);
+  font-weight: 600;
+  color: var(--text-main);
   line-height: 1.4;
 }
+
 .detail-sub {
   font-size: 11px;
-  color: var(--text-3);
+  color: var(--text-muted);
   margin-top: 1px;
 }
 
-/* ── Map link ───────────────────────────────────────────────── */
+/* ── Action Buttons & Links ─────────────────────────────────── */
 .map-link {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: 10px;
-  padding: 11px 14px;
+  margin-top: 12px;
+  padding: 12px 14px;
   border-radius: 12px;
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  color: var(--text-2);
+  background: #ffffff;
+  border: 1px solid var(--card-border);
+  color: var(--text-main);
   text-decoration: none;
   transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
+
 .map-link:hover {
-  background: var(--pink-pale);
-  border-color: rgba(236, 72, 153, 0.32);
+  background: var(--gold-bg);
+  border-color: rgba(197, 160, 89, 0.45);
   transform: translateY(-1px);
 }
+
 .map-text {
   flex: 1;
-  font-size: 11px;
+  font-size: 11.5px;
+  font-weight: 500;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
-/* ── RSVP ───────────────────────────────────────────────────── */
+/* ── Quick Utility Bar (Add to Cal, Celebrate, Wish) ────────── */
+.action-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.action-card-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 10px;
+  border-radius: 12px;
+  border: 1px solid var(--card-border);
+  background: #ffffff;
+  color: var(--text-main);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.action-card-btn:active {
+  transform: scale(0.96);
+}
+
+.action-card-btn:hover {
+  background: var(--gold-bg);
+  border-color: rgba(197, 160, 89, 0.4);
+}
+
+.btn-celebrate {
+  background: linear-gradient(135deg, #f7eedd 0%, #faece3 100%);
+  border-color: rgba(197, 160, 89, 0.4);
+  color: var(--rose-gold-dark);
+}
+
+/* ── Timeline Program ───────────────────────────────────────── */
+.timeline-item {
+  position: relative;
+  display: flex;
+  gap: 14px;
+  padding-bottom: 14px;
+}
+
+.timeline-item:last-child {
+  padding-bottom: 0;
+}
+
+.timeline-line {
+  position: absolute;
+  top: 24px;
+  bottom: 0;
+  left: 16px;
+  width: 2px;
+  background: rgba(197, 160, 89, 0.25);
+}
+
+.timeline-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid var(--rose-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--rose-gold);
+  z-index: 1;
+}
+
+.timeline-content {
+  flex: 1;
+  padding-top: 4px;
+}
+
+.timeline-time {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gold-dark);
+  letter-spacing: 0.04em;
+}
+
+.timeline-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.timeline-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+/* ── RSVP Section ───────────────────────────────────────────── */
 .input-label {
   display: block;
   font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--text-3);
+  color: var(--text-faint);
   margin-bottom: 6px;
 }
+
 .modern-input {
   width: 100%;
-  padding: 11px 14px;
-  border-radius: 10px;
-  border: 1.5px solid var(--border);
-  background: rgba(255, 255, 255, 0.7);
-  color: var(--text);
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1.5px solid var(--card-border);
+  background: #ffffff;
+  color: var(--text-main);
   font-size: 14px;
   font-family: "Plus Jakarta Sans", sans-serif;
   outline: none;
-  transition:
-    border-color 0.2s,
-    box-shadow 0.2s;
+  transition: all 0.2s ease;
 }
+
 .modern-input:focus {
-  border-color: var(--pink);
-  box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.12);
+  border-color: var(--rose-gold);
+  box-shadow: 0 0 0 3px var(--rose-gold-glow);
 }
+
 .modern-input::placeholder {
-  color: var(--text-3);
+  color: var(--text-faint);
 }
+
 .input-hint {
   font-size: 11px;
-  color: var(--pink);
+  color: var(--rose-gold);
   margin-top: 5px;
 }
+
 .rsvp-btn {
   flex: 1;
   display: flex;
@@ -578,36 +779,40 @@ body {
   justify-content: center;
   gap: 6px;
   margin: 10px 0;
-
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1.5px solid var(--border);
-  background: rgba(255, 255, 255, 0.6);
-  color: var(--text-2);
+  padding: 11px 12px;
+  border-radius: 12px;
+  border: 1.5px solid var(--card-border);
+  background: #ffffff;
+  color: var(--text-muted);
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   font-family: "Plus Jakarta Sans", sans-serif;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
+
 .rsvp-btn:active {
   transform: scale(0.96);
 }
+
 .rsvp-idle:hover {
-  background: var(--pink-pale);
-  border-color: rgba(236, 72, 153, 0.3);
+  background: var(--gold-bg);
+  border-color: rgba(197, 160, 89, 0.4);
 }
+
 .rsvp-yes {
-  background: var(--pink);
-  border-color: var(--pink);
-  color: white;
-  box-shadow: 0 4px 14px rgba(236, 72, 153, 0.35);
+  background: linear-gradient(135deg, #b75d4e 0%, #c97463 100%);
+  border-color: var(--rose-gold);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(183, 93, 78, 0.35);
 }
+
 .rsvp-no {
-  background: #6b7280;
-  border-color: #6b7280;
-  color: white;
+  background: #645a55;
+  border-color: #645a55;
+  color: #ffffff;
 }
+
 .submit-btn {
   width: 100%;
   display: flex;
@@ -615,215 +820,275 @@ body {
   justify-content: center;
   gap: 8px;
   padding: 13px;
-  border-radius: 10px;
+  border-radius: 12px;
   border: none;
-  background: linear-gradient(135deg, #ec4899, #f472b6);
-  color: white;
-  font-size: 13px;
-  font-weight: 600;
+  background: linear-gradient(135deg, #b75d4e 0%, #c97463 50%, #c5a059 100%);
+  color: #ffffff;
+  font-size: 13.5px;
+  font-weight: 700;
   font-family: "Plus Jakarta Sans", sans-serif;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
   cursor: pointer;
-  box-shadow: 0 4px 18px rgba(236, 72, 153, 0.38);
+  box-shadow: 0 4px 20px rgba(183, 93, 78, 0.35);
   transition: all 0.25s ease;
 }
+
 .submit-btn:hover:not(:disabled) {
-  box-shadow: 0 6px 24px rgba(236, 72, 153, 0.5);
+  box-shadow: 0 6px 24px rgba(183, 93, 78, 0.48);
   transform: translateY(-1px);
 }
+
 .submit-btn:disabled {
   opacity: 0.45;
   cursor: not-allowed;
   transform: none;
 }
 
-/* ── RSVP OK ────────────────────────────────────────────────── */
+/* ── RSVP Success State ─────────────────────────────────────── */
 .rsvp-ok-icon {
-  width: 52px;
-  height: 52px;
+  width: 54px;
+  height: 54px;
   border-radius: 50%;
-  background: var(--pink-pale);
-  border: 1px solid rgba(236, 72, 153, 0.2);
+  background: var(--gold-bg);
+  border: 1px solid rgba(197, 160, 89, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 12px;
-  color: var(--pink);
+  color: var(--gold-dark);
 }
+
 .rsvp-ok-title {
   font-family: "Bricolage Grotesque", sans-serif;
   font-size: 20px;
-  font-weight: 600;
-  color: var(--rose);
+  font-weight: 700;
+  color: var(--rose-gold-dark);
   margin-bottom: 4px;
 }
+
 .rsvp-ok-sub {
   font-size: 13px;
-  color: var(--text-2);
+  color: var(--text-muted);
+}
+
+/* ── Floating Celebrate Button ──────────────────────────────── */
+.floating-celebrate-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 20px;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 18px;
+  border-radius: 99px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: linear-gradient(135deg, #b75d4e 0%, #c5a059 100%);
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 22px rgba(183, 93, 78, 0.45);
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.floating-celebrate-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 28px rgba(183, 93, 78, 0.55);
+}
+
+.floating-celebrate-btn:active {
+  transform: scale(0.95);
+}
+
+/* ── Toast Notification ─────────────────────────────────────── */
+.toast-notice {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99;
+  padding: 10px 20px;
+  border-radius: 99px;
+  background: #231b18;
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* ── Footer ─────────────────────────────────────────────────── */
 .site-footer {
-  padding: 40px 20px;
+  padding: 36px 20px 48px;
   text-align: center;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--card-border-subtle);
   margin-top: 8px;
 }
+
 .footer-hearts {
   display: flex;
   justify-content: center;
   gap: 6px;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
+
 .footer-name {
   font-family: "Bricolage Grotesque", sans-serif;
-  font-size: 22px;
-  font-weight: 600;
-  color: var(--rose);
-  margin-bottom: 4px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--rose-gold-dark);
+  margin-bottom: 3px;
 }
+
 .footer-meta {
   font-size: 11px;
-  color: var(--text-3);
+  color: var(--text-faint);
 }
 
-/* ── Scroll cue ─────────────────────────────────────────────── */
-.scroll-cue {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 50;
-  color: var(--pink);
-  pointer-events: none;
-  opacity: 0.7;
-}
-
-/* ── Admin ──────────────────────────────────────────────────── */
+/* ── Admin Page Styles ──────────────────────────────────────── */
 .admin-wrap {
   min-height: 100vh;
   padding: 20px;
-  background: linear-gradient(165deg, #fff8fc 0%, #fce4f3 50%, #fff4fb 100%);
+  background: linear-gradient(165deg, #181514 0%, #231b18 100%);
+  color: #ffffff;
 }
+
 .admin-inner {
   max-width: 480px;
   margin: 0 auto;
 }
+
 .admin-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
 }
+
 .admin-title {
   font-family: "Bricolage Grotesque", sans-serif;
   font-size: 20px;
-  font-weight: 600;
-  color: var(--rose);
+  font-weight: 700;
+  color: #f7eedd;
 }
+
 .admin-refresh {
   padding: 8px;
   border-radius: 50%;
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(197, 160, 89, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--gold-light);
   cursor: pointer;
 }
+
 .admin-list-title {
   display: flex;
   align-items: center;
   gap: 6px;
   font-family: "Bricolage Grotesque", sans-serif;
   font-size: 17px;
-  font-weight: 600;
-  color: var(--rose);
+  font-weight: 700;
+  color: #f7eedd;
   margin-bottom: 12px;
 }
+
+.admin-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(197, 160, 89, 0.2);
+  border-radius: 16px;
+  padding: 16px;
+}
+
 .stat-label {
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--text-3);
+  color: #c5a059;
   margin-bottom: 4px;
 }
+
 .stat-num {
   font-family: "Bricolage Grotesque", sans-serif;
   font-size: 36px;
-  font-weight: 600;
-  color: var(--rose);
+  font-weight: 800;
+  color: #ffffff;
 }
-.stat-yes {
-  color: var(--pink);
-  font-weight: 500;
-}
-.stat-no {
-  color: #6b7280;
-  font-weight: 500;
-}
+
+.stat-yes { color: #dfba73; font-weight: 600; }
+.stat-no  { color: #9c8b84; font-weight: 600; }
+
 .pie-chart {
-  width: 90px;
-  height: 90px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   background: conic-gradient(
-    var(--pink) var(--yes-pct, 0%),
-    var(--pink-pale) 0
+    #c5a059 var(--yes-pct, 0%),
+    rgba(255, 255, 255, 0.1) 0
   );
-  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.18);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
 }
+
 .list-name {
-  font-weight: 500;
-  color: var(--text);
-  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  font-size: 13.5px;
 }
+
 .list-time {
-  font-size: 10px;
-  color: var(--text-3);
+  font-size: 10.5px;
+  color: #9c8b84;
   margin-top: 2px;
 }
+
 .badge-yes {
   padding: 3px 10px;
   border-radius: 99px;
   font-size: 11px;
-  font-weight: 500;
-  background: var(--pink-pale);
-  color: var(--pink);
-  border: 1px solid rgba(236, 72, 153, 0.25);
-  white-space: nowrap;
+  font-weight: 600;
+  background: rgba(197, 160, 89, 0.2);
+  color: #dfba73;
+  border: 1px solid rgba(197, 160, 89, 0.4);
 }
+
 .badge-no {
   padding: 3px 10px;
   border-radius: 99px;
   font-size: 11px;
-  font-weight: 500;
-  background: #f3f4f6;
-  color: #6b7280;
-  border: 1px solid #e5e7eb;
-  white-space: nowrap;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.08);
+  color: #9c8b84;
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
+
 .error-box {
   padding: 14px;
-  border-radius: 10px;
-  background: #fce7f3;
-  color: var(--rose);
+  border-radius: 12px;
+  background: rgba(183, 93, 78, 0.2);
+  color: #dfba73;
   font-size: 13px;
   text-align: center;
-  border: 1px solid rgba(236, 72, 153, 0.2);
+  border: 1px solid rgba(183, 93, 78, 0.4);
 }
+
 .empty-text {
   text-align: center;
   padding: 40px 0;
-  color: var(--text-3);
+  color: #9c8b84;
   font-size: 13px;
 }
 
 /* ── Scrollbar ──────────────────────────────────────────────── */
 ::-webkit-scrollbar {
-  width: 3px;
+  width: 4px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--pink-lt);
+  background: rgba(197, 160, 89, 0.4);
   border-radius: 2px;
 }
