@@ -9,6 +9,8 @@ import {
   Sparkles,
   Send,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   PartyPopper,
   BookOpen,
   ExternalLink,
@@ -52,18 +54,91 @@ function generateToken(name) {
 function calcDiff(target) {
   const d = Math.max(0, target - Date.now());
   return {
-    days:    Math.floor(d / 864e5),
-    hours:   Math.floor((d / 36e5) % 24),
+    days: Math.floor(d / 864e5),
+    hours: Math.floor((d / 36e5) % 24),
     minutes: Math.floor((d / 6e4) % 60),
     seconds: Math.floor((d / 1e3) % 60),
   };
 }
 
-
-
 /* ══════════════════════════════════════════════════════════════
-   SCROLL REVEAL
+   PHOTO CAROUSEL
    ══════════════════════════════════════════════════════════════ */
+const PHOTOS = [
+  { src: "/portrait.png", caption: "Mỹ Vy" },
+  { src: "/graduate-photo.png", caption: "Mỹ Vy" },
+];
+
+function PhotoCarousel() {
+  const [current, setCurrent] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const count = PHOTOS.length;
+
+  const go = (dir) => setCurrent((c) => (c + dir + count) % count);
+
+  return (
+    <section className="carousel-section">
+      <div className="carousel-track-wrap">
+        <motion.div
+          key={current}
+          initial={{ opacity: 0, x: dragging ? 0 : 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -30 }}
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.15}
+          onDragStart={() => setDragging(true)}
+          onDragEnd={(_, info) => {
+            setDragging(false);
+            if (info.offset.x < -40) go(1);
+            else if (info.offset.x > 40) go(-1);
+          }}
+          className="carousel-slide"
+          style={{ cursor: "grab" }}
+        >
+          <img
+            src={PHOTOS[current].src}
+            alt={PHOTOS[current].caption}
+            className="carousel-img"
+            draggable={false}
+          />
+          {/* subtle gradient overlay at bottom */}
+          <div className="carousel-overlay" />
+        </motion.div>
+
+        {/* Prev / Next arrows */}
+        <button
+          className="carousel-arrow carousel-arrow-left"
+          onClick={() => go(-1)}
+          aria-label="Ảnh trước"
+        >
+          <ChevronLeft size={18} strokeWidth={2} />
+        </button>
+        <button
+          className="carousel-arrow carousel-arrow-right"
+          onClick={() => go(1)}
+          aria-label="Ảnh sau"
+        >
+          <ChevronRight size={18} strokeWidth={2} />
+        </button>
+      </div>
+
+      {/* Dot indicators */}
+      <div className="carousel-dots">
+        {PHOTOS.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrent(i)}
+            className={`carousel-dot ${i === current ? "carousel-dot-active" : ""}`}
+            aria-label={`Ảnh ${i + 1}`}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function Reveal({ children, delay = 0, className = "" }) {
   return (
     <motion.div
@@ -108,8 +183,8 @@ function Countdown({ target }) {
   }, [target]);
 
   const items = [
-    { v: t.days,    l: "Ngày" },
-    { v: t.hours,   l: "Giờ"  },
+    { v: t.days, l: "Ngày" },
+    { v: t.hours, l: "Giờ" },
     { v: t.minutes, l: "Phút" },
     { v: t.seconds, l: "Giây" },
   ];
@@ -122,14 +197,18 @@ function Countdown({ target }) {
           initial={{ opacity: 0, y: 14 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: idx * 0.07, ease: [0.22, 1, 0.36, 1], duration: 0.45 }}
+          transition={{
+            delay: idx * 0.07,
+            ease: [0.22, 1, 0.36, 1],
+            duration: 0.45,
+          }}
           className="cd-card"
         >
           <AnimatePresence mode="popLayout">
             <motion.span
               key={it.v}
               initial={{ y: -8, opacity: 0 }}
-              animate={{ y: 0,  opacity: 1 }}
+              animate={{ y: 0, opacity: 1 }}
               exit={{ y: 8, opacity: 0 }}
               transition={{ duration: 0.2 }}
               className="cd-num"
@@ -148,24 +227,40 @@ function Countdown({ target }) {
    MINI CALENDAR
    ══════════════════════════════════════════════════════════════ */
 function MiniCalendar({ date }) {
-  const year  = date.getFullYear();
+  const year = date.getFullYear();
   const month = date.getMonth();
-  const day   = date.getDate();
+  const day = date.getDate();
   const first = new Date(year, month, 1).getDay();
   const total = new Date(year, month + 1, 0).getDate();
-  const labels = ["CN","T2","T3","T4","T5","T6","T7"];
-  const months = ["Tháng 1","Tháng 2","Tháng 3","Tháng 4","Tháng 5","Tháng 6",
-                  "Tháng 7","Tháng 8","Tháng 9","Tháng 10","Tháng 11","Tháng 12"];
+  const labels = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
+  const months = [
+    "Tháng 1",
+    "Tháng 2",
+    "Tháng 3",
+    "Tháng 4",
+    "Tháng 5",
+    "Tháng 6",
+    "Tháng 7",
+    "Tháng 8",
+    "Tháng 9",
+    "Tháng 10",
+    "Tháng 11",
+    "Tháng 12",
+  ];
   const cells = [];
   for (let i = 0; i < first; i++) cells.push(null);
   for (let d = 1; d <= total; d++) cells.push(d);
 
   return (
     <div style={{ maxWidth: 280, margin: "0 auto" }}>
-      <p className="cal-month">{months[month]} {year}</p>
+      <p className="cal-month">
+        {months[month]} {year}
+      </p>
       <div className="cal-grid mb-1">
         {labels.map((l) => (
-          <div key={l} className="cal-head">{l}</div>
+          <div key={l} className="cal-head">
+            {l}
+          </div>
         ))}
       </div>
       <div className="cal-grid">
@@ -190,24 +285,31 @@ function MiniCalendar({ date }) {
    RSVP
    ══════════════════════════════════════════════════════════════ */
 function RSVPSection({ guestName }) {
-  const [name, setName]             = useState(guestName === CONFIG.defaultGuestName ? "" : guestName);
-  const [status, setStatus]         = useState(null);
+  const [name, setName] = useState(
+    guestName === CONFIG.defaultGuestName ? "" : guestName,
+  );
+  const [status, setStatus] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitted, setSubmitted]   = useState(false);
-  const [attendees, setAttendees]   = useState([]);
+  const [submitted, setSubmitted] = useState(false);
+  const [attendees, setAttendees] = useState([]);
 
   useEffect(() => {
     const fetch_ = async () => {
       if (!CONFIG.GOOGLE_SCRIPT_URL) return;
       try {
-        const res  = await fetch(CONFIG.GOOGLE_SCRIPT_URL);
+        const res = await fetch(CONFIG.GOOGLE_SCRIPT_URL);
         const json = await res.json();
         if (json.status === "success") {
           setAttendees(json.data);
           const init = guestName === CONFIG.defaultGuestName ? "" : guestName;
           if (init) {
-            const ex = json.data.find((d) => d.name.toLowerCase() === init.toLowerCase());
-            if (ex) { setSubmitted(true); setStatus(ex.status); }
+            const ex = json.data.find(
+              (d) => d.name.toLowerCase() === init.toLowerCase(),
+            );
+            if (ex) {
+              setSubmitted(true);
+              setStatus(ex.status);
+            }
           }
         }
       } catch {}
@@ -216,24 +318,36 @@ function RSVPSection({ guestName }) {
   }, [guestName]);
 
   const isNameExist = useMemo(
-    () => !!name.trim() && attendees.some((d) => d.name.toLowerCase() === name.trim().toLowerCase()),
-    [name, attendees]
+    () =>
+      !!name.trim() &&
+      attendees.some((d) => d.name.toLowerCase() === name.trim().toLowerCase()),
+    [name, attendees],
   );
 
   const handleSubmit = async () => {
     if (!name.trim() || !status) return;
-    if (!CONFIG.GOOGLE_SCRIPT_URL) { alert("Chưa cấu hình GOOGLE_SCRIPT_URL!"); return; }
+    if (!CONFIG.GOOGLE_SCRIPT_URL) {
+      alert("Chưa cấu hình GOOGLE_SCRIPT_URL!");
+      return;
+    }
     setIsSubmitting(true);
     try {
       await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
-        method: "POST", mode: "no-cors",
+        method: "POST",
+        mode: "no-cors",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token: generateToken(name), name, status }),
       });
-      setAttendees([...attendees, { name: name.trim(), status, timestamp: new Date().toISOString() }]);
+      setAttendees([
+        ...attendees,
+        { name: name.trim(), status, timestamp: new Date().toISOString() },
+      ]);
       setSubmitted(true);
-    } catch { alert("Có lỗi xảy ra. Vui lòng thử lại!"); }
-    finally { setIsSubmitting(false); }
+    } catch {
+      alert("Có lỗi xảy ra. Vui lòng thử lại!");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (submitted) {
@@ -320,27 +434,34 @@ function RSVPSection({ guestName }) {
    ADMIN
    ══════════════════════════════════════════════════════════════ */
 function AdminPage() {
-  const [data, setData]       = useState([]);
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState(null);
+  const [error, setError] = useState(null);
 
   const fetchData = async () => {
-    setLoading(true); setError(null);
+    setLoading(true);
+    setError(null);
     try {
-      if (!CONFIG.GOOGLE_SCRIPT_URL) throw new Error("Chưa cấu hình GOOGLE_SCRIPT_URL");
-      const res  = await fetch(CONFIG.GOOGLE_SCRIPT_URL);
+      if (!CONFIG.GOOGLE_SCRIPT_URL)
+        throw new Error("Chưa cấu hình GOOGLE_SCRIPT_URL");
+      const res = await fetch(CONFIG.GOOGLE_SCRIPT_URL);
       const json = await res.json();
       if (json.status === "success") setData(json.data.reverse());
       else throw new Error("Lỗi từ server");
-    } catch (err) { setError(err.message); }
-    finally { setLoading(false); }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-  const total    = data.length;
+  const total = data.length;
   const yesCount = data.filter((d) => d.status === "Tham dự").length;
-  const noCount  = data.filter((d) => d.status === "Không tham dự").length;
-  const yesPct   = total > 0 ? (yesCount / total) * 100 : 0;
+  const noCount = data.filter((d) => d.status === "Không tham dự").length;
+  const yesPct = total > 0 ? (yesCount / total) * 100 : 0;
 
   return (
     <div className="admin-wrap">
@@ -351,7 +472,11 @@ function AdminPage() {
             <h1 className="admin-title">Admin Dashboard</h1>
           </div>
           <button onClick={fetchData} className="admin-refresh">
-            <RefreshCw size={15} color="#ec4899" className={loading ? "animate-spin" : ""} />
+            <RefreshCw
+              size={15}
+              color="#ec4899"
+              className={loading ? "animate-spin" : ""}
+            />
           </button>
         </div>
 
@@ -382,12 +507,21 @@ function AdminPage() {
         ) : (
           <div className="flex flex-col gap-2">
             {data.map((item, idx) => (
-              <div key={idx} className="card p-4 flex items-center justify-between">
+              <div
+                key={idx}
+                className="card p-4 flex items-center justify-between"
+              >
                 <div>
                   <p className="list-name">{item.name}</p>
-                  <p className="list-time">{new Date(item.timestamp).toLocaleString("vi-VN")}</p>
+                  <p className="list-time">
+                    {new Date(item.timestamp).toLocaleString("vi-VN")}
+                  </p>
                 </div>
-                <span className={item.status === "Tham dự" ? "badge-yes" : "badge-no"}>
+                <span
+                  className={
+                    item.status === "Tham dự" ? "badge-yes" : "badge-no"
+                  }
+                >
                   {item.status}
                 </span>
               </div>
@@ -403,26 +537,33 @@ function AdminPage() {
    MAIN APP
    ══════════════════════════════════════════════════════════════ */
 export default function App() {
-  const p       = new URLSearchParams(window.location.search);
+  const p = new URLSearchParams(window.location.search);
   const isAdmin = p.get("admin") === "true";
   if (isAdmin) return <AdminPage />;
 
   const guestName = useMemo(() => getGuestName(), []);
 
   const details = [
-    { icon: Calendar, label: "Ngày",       value: "Thứ Năm, 27 tháng 8 năm 2026" },
-    { icon: Clock,    label: "Thời gian",   value: "13:00 (1 giờ chiều)" },
-    { icon: MapPin,   label: "Địa điểm",    value: CONFIG.venue, sub: CONFIG.venueSub },
-    { icon: BookOpen, label: "Ngành học",   value: `${CONFIG.degree} — ${CONFIG.major}` },
+    { icon: Calendar, label: "Ngày", value: "Thứ Năm, 27 tháng 8 năm 2026" },
+    { icon: Clock, label: "Thời gian", value: "13:00 (1 giờ chiều)" },
+    {
+      icon: MapPin,
+      label: "Địa điểm",
+      value: CONFIG.venue,
+      sub: CONFIG.venueSub,
+    },
+    {
+      icon: BookOpen,
+      label: "Ngành học",
+      value: `${CONFIG.degree} — ${CONFIG.major}`,
+    },
   ];
 
   return (
     <div className="page-root">
       <div className="site-card">
-
         {/* ── HERO ─────────────────────────────────────────────── */}
         <section className="hero">
-
           {/* Pill badge */}
           <motion.div
             initial={{ opacity: 0, y: -12 }}
@@ -438,7 +579,11 @@ export default function App() {
           <motion.div
             initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.65, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            transition={{
+              duration: 0.65,
+              delay: 0.1,
+              ease: [0.22, 1, 0.36, 1],
+            }}
             className="portrait-wrap"
           >
             <div className="portrait-frame">
@@ -458,7 +603,9 @@ export default function App() {
             className="hero-text"
           >
             <h1 className="hero-name">{CONFIG.graduateName}</h1>
-            <p className="hero-sub">{CONFIG.degree} · {CONFIG.major}</p>
+            <p className="hero-sub">
+              {CONFIG.degree} · {CONFIG.major}
+            </p>
             <p className="hero-univ">{CONFIG.university}</p>
           </motion.div>
         </section>
@@ -476,7 +623,12 @@ export default function App() {
 
         <Divider />
 
-        {/* ── COUNTDOWN ────────────────────────────────────────── */}
+        {/* ── PHOTO CAROUSEL ───────────────────────────────────── */}
+        <PhotoCarousel />
+
+        <Divider />
+        {/* -- COUNTDOWN ----------------------------------------- */}
+
         <section className="section">
           <Reveal>
             <SectionTitle title="Đếm ngược đến ngày lễ" subtitle="COUNTDOWN" />
@@ -510,7 +662,11 @@ export default function App() {
                   initial={{ opacity: 0, x: -12 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.07, ease: [0.22, 1, 0.36, 1], duration: 0.4 }}
+                  transition={{
+                    delay: i * 0.07,
+                    ease: [0.22, 1, 0.36, 1],
+                    duration: 0.4,
+                  }}
                   className={`detail-row ${i < details.length - 1 ? "detail-border" : ""}`}
                 >
                   <div className="detail-icon">
@@ -537,7 +693,11 @@ export default function App() {
                 <MapPin size={14} strokeWidth={1.8} />
               </div>
               <span className="map-text">{CONFIG.venueAddress}</span>
-              <ExternalLink size={13} strokeWidth={1.8} style={{ flexShrink: 0, opacity: 0.5 }} />
+              <ExternalLink
+                size={13}
+                strokeWidth={1.8}
+                style={{ flexShrink: 0, opacity: 0.5 }}
+              />
             </a>
           </Reveal>
         </section>
@@ -560,9 +720,18 @@ export default function App() {
                 <motion.div
                   key={i}
                   animate={{ scale: [1, 1.3, 1] }}
-                  transition={{ duration: 2, delay: i * 0.35, repeat: Infinity }}
+                  transition={{
+                    duration: 2,
+                    delay: i * 0.35,
+                    repeat: Infinity,
+                  }}
                 >
-                  <Heart size={12} fill="#ec4899" color="#ec4899" strokeWidth={0} />
+                  <Heart
+                    size={12}
+                    fill="#ec4899"
+                    color="#ec4899"
+                    strokeWidth={0}
+                  />
                 </motion.div>
               ))}
             </div>
@@ -578,7 +747,10 @@ export default function App() {
           transition={{ delay: 4, duration: 1 }}
           className="scroll-cue"
         >
-          <motion.div animate={{ y: [0, 5, 0] }} transition={{ duration: 1.2, repeat: Infinity }}>
+          <motion.div
+            animate={{ y: [0, 5, 0] }}
+            transition={{ duration: 1.2, repeat: Infinity }}
+          >
             <ChevronDown size={18} strokeWidth={1.5} />
           </motion.div>
         </motion.div>
@@ -586,4 +758,3 @@ export default function App() {
     </div>
   );
 }
-
