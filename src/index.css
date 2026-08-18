@@ -422,8 +422,8 @@ body {
   border: 3.5px solid #ffffff;
   background: linear-gradient(
     180deg,
-    transparent 1%,
-    rgba(248, 26, 104, 0.22) 150%
+    transparent 0%,
+    rgba(248, 26, 104, 0.22) 100%
   );
   box-shadow:
     0 0 0 3px rgba(255, 42, 117, 0.4),
@@ -436,8 +436,8 @@ body {
   inset: 0;
   background: linear-gradient(
     180deg,
-    transparent 1%,
-    rgba(248, 26, 104, 0.22) 150%
+    transparent 0%,
+    rgba(252, 0, 88, 0.22) 100%
   );
   pointer-events: none;
 }
