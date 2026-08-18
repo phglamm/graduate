@@ -12,7 +12,7 @@ import {
   ChevronLeft,
   ChevronRight,
   PartyPopper,
-  BookOpen,
+  Phone,
   ExternalLink,
   CheckCircle2,
   XCircle,
@@ -53,6 +53,7 @@ const CONFIG = {
   venueSub: "Trường ĐH Kinh Tế - Tài Chính TP.HCM",
   venueAddress:
     "Nhà hát Hòa Bình, 240 3 Tháng 2, Hòa Hưng, Hồ Chí Minh, Việt Nam",
+  contact: "0973957488 - Mỹ Vy",
   photoUrl: "/portrait.png",
   defaultGuestName: "Quý khách",
   GOOGLE_SCRIPT_URL: import.meta.env.VITE_GOOGLE_SCRIPT_URL,
@@ -965,9 +966,9 @@ export default function App() {
       sub: CONFIG.venueSub,
     },
     {
-      icon: BookOpen,
-      label: "Chuyên ngành",
-      value: `${CONFIG.major}`,
+      icon: Phone,
+      label: "Liên hệ",
+      value: CONFIG.contact,
     },
   ];
 
