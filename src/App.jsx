@@ -806,7 +806,7 @@ function AdminPage() {
             <p className="text-[10px] font-extrabold uppercase tracking-wider text-[#ff82b6] !mb-1">
               Tổng số phản hồi
             </p>
-            <p className="font-extrabold text-4xl text-white">{total}</p>
+            <p className="font-extrabold text-4xl text-[#2e081c]">{total}</p>
             <div className="flex gap-4 !mt-2 text-xs font-bold">
               <span className="text-[#ff82b6] flex items-center gap-1">
                 <CheckCircle2 size={13} /> Sẽ tham dự: {yesCount}
@@ -831,7 +831,7 @@ function AdminPage() {
         ) : error ? (
           <div className="error-box">{error}</div>
         ) : data.length === 0 ? (
-          <p className="text-center !py-10 text-[#b86f94] text-xs font-semibold">
+          <p className="text-center !py-10 text-[#9e7189] text-xs font-semibold">
             Chưa có khách nào gửi phản hồi.
           </p>
         ) : (
@@ -839,21 +839,26 @@ function AdminPage() {
             {data.map((item, idx) => (
               <div
                 key={idx}
-                className="admin-card p-4 flex items-center justify-between"
+                className="admin-card p-4"
               >
-                <div>
-                  <p className="font-bold text-white text-sm">{item.name}</p>
-                  <p className="text-[10.5px] text-[#b86f94] !mt-1">
-                    {new Date(item.timestamp).toLocaleString("vi-VN")}
-                  </p>
+                <div className="flex items-center justify-between">
+                  <p className="font-bold text-[#2e081c] text-sm">{item.name}</p>
+                  <span
+                    className={
+                      item.status === "Tham dự" ? "badge-yes" : "badge-no"
+                    }
+                  >
+                    {item.status}
+                  </span>
                 </div>
-                <span
-                  className={
-                    item.status === "Tham dự" ? "badge-yes" : "badge-no"
-                  }
-                >
-                  {item.status}
-                </span>
+                {item.wishes && (
+                  <p className="text-[12px] text-[#6b3a52] !mt-2 italic bg-[#fff0f6] rounded-lg !px-3 !py-2 border border-[#ffcce0]">
+                    💌 "{item.wishes}"
+                  </p>
+                )}
+                <p className="text-[10.5px] text-[#9e7189] !mt-1.5">
+                  {new Date(item.timestamp).toLocaleString("vi-VN")}
+                </p>
               </div>
             ))}
           </div>
