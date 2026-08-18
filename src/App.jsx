@@ -898,7 +898,7 @@ function EnvelopeCover({ onOpen, guestName }) {
 
         {/* Tên khách mời (nếu có từ tham số link) */}
         {guestName && guestName !== CONFIG.defaultGuestName && (
-          <p className="text-[12.5px] font-extrabold text-[#8b1d3b] tracking-wider !mb-5">
+          <p className="text-[15px] font-extrabold text-[#8b1d3b] tracking-wider !mb-5">
             {guestName}
           </p>
         )}
