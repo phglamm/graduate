@@ -47,7 +47,7 @@ const CONFIG = {
   major: "Logistics & Quản lý Chuỗi cung ứng",
   university: "Trường Đại học Kinh Tế - Tài Chính TP.HCM (UEF)",
   ceremonyDate: new Date(2026, 7, 27, 13, 0, 0), // 27/08/2026 lúc 13:00
-  ceremonyTime: "16:00 - 17:00 (4 giờ đến 5 giờ 30 chiều)",
+  ceremonyTime: "16:00 - 17:30 (4 giờ đến 5 giờ 30 chiều)",
   ceremonyDayText: "Thứ Năm, 27 tháng 8 năm 2026",
   venue: "Nhà hát Hoà Bình",
   venueSub: "Trường ĐH Kinh Tế - Tài Chính TP.HCM",
