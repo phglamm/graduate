@@ -837,12 +837,11 @@ function AdminPage() {
         ) : (
           <div className="flex flex-col gap-2.5">
             {data.map((item, idx) => (
-              <div
-                key={idx}
-                className="admin-card p-4"
-              >
+              <div key={idx} className="admin-card p-4">
                 <div className="flex items-center justify-between">
-                  <p className="font-bold text-[#2e081c] text-sm">{item.name}</p>
+                  <p className="font-bold text-[#2e081c] text-sm">
+                    {item.name}
+                  </p>
                   <span
                     className={
                       item.status === "Tham dự" ? "badge-yes" : "badge-no"
@@ -1097,16 +1096,16 @@ export default function App() {
             <Divider />
 
             {/* ── PHẦN 3: KHOẢNH KHẮC KỶ NIỆM (CAROUSEL) ───────────── */}
-            <section className="art-section">
+            {/* <section className="art-section">
               <Reveal>
                 <SectionTitle title="KHOẢNH KHẮC KỶ NIỆM" />
               </Reveal>
               <Reveal delay={0.06}>
                 <PhotoCarousel />
               </Reveal>
-            </section>
+            </section> */}
 
-            <Divider />
+            {/* <Divider /> */}
 
             {/* ── PHẦN 4: ĐẾM NGƯỢC NGÀY LỄ ────────────────────────── */}
             <section className="art-section">
