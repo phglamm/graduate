@@ -685,7 +685,7 @@ function RSVPSection({ guestName }) {
               className="modern-input"
             />
             {isNameExist && (
-              <p className="text-[11px] font-bold text-[#ff2a75] mt-1.5">
+              <p className="text-[11px] font-bold text-[#ff2a75] !mt-1.5">
                 Tên này đã có trong danh sách xác nhận.
               </p>
             )}
@@ -807,7 +807,7 @@ function AdminPage() {
               Tổng số phản hồi
             </p>
             <p className="font-extrabold text-4xl text-white">{total}</p>
-            <div className="flex gap-4 mt-2 text-xs font-bold">
+            <div className="flex gap-4 !mt-2 text-xs font-bold">
               <span className="text-[#ff82b6] flex items-center gap-1">
                 <CheckCircle2 size={13} /> Sẽ tham dự: {yesCount}
               </span>
@@ -843,7 +843,7 @@ function AdminPage() {
               >
                 <div>
                   <p className="font-bold text-white text-sm">{item.name}</p>
-                  <p className="text-[10.5px] text-[#b86f94] mt-1">
+                  <p className="text-[10.5px] text-[#b86f94] !mt-1">
                     {new Date(item.timestamp).toLocaleString("vi-VN")}
                   </p>
                 </div>
