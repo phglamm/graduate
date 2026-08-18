@@ -28,17 +28,33 @@ export default function MusicPlayer({ src = "/music.mp3" }) {
       }
 
       const notes = [
-        261.63, 329.63, 392.0, 523.25, // C4, E4, G4, C5
-        293.66, 349.23, 440.0, 587.33, // D4, F4, A4, D5
-        329.63, 392.0, 493.88, 659.25, // E4, G4, B4, E5
-        392.0, 493.88, 587.33, 783.99, // G4, B4, D5, G5
+        261.63,
+        329.63,
+        392.0,
+        523.25, // C4, E4, G4, C5
+        293.66,
+        349.23,
+        440.0,
+        587.33, // D4, F4, A4, D5
+        329.63,
+        392.0,
+        493.88,
+        659.25, // E4, G4, B4, E5
+        392.0,
+        493.88,
+        587.33,
+        783.99, // G4, B4, D5, G5
       ];
       let step = 0;
 
       if (synthIntervalRef.current) clearInterval(synthIntervalRef.current);
 
       const playTone = () => {
-        if (!synthAudioCtxRef.current || synthAudioCtxRef.current.state !== "running") return;
+        if (
+          !synthAudioCtxRef.current ||
+          synthAudioCtxRef.current.state !== "running"
+        )
+          return;
         const freq = notes[step % notes.length];
         step++;
 
@@ -46,11 +62,20 @@ export default function MusicPlayer({ src = "/music.mp3" }) {
         const gain = synthAudioCtxRef.current.createGain();
 
         osc.type = "sine";
-        osc.frequency.setValueAtTime(freq, synthAudioCtxRef.current.currentTime);
+        osc.frequency.setValueAtTime(
+          freq,
+          synthAudioCtxRef.current.currentTime,
+        );
 
         gain.gain.setValueAtTime(0.0001, synthAudioCtxRef.current.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.07, synthAudioCtxRef.current.currentTime + 0.08);
-        gain.gain.exponentialRampToValueAtTime(0.0001, synthAudioCtxRef.current.currentTime + 1.2);
+        gain.gain.exponentialRampToValueAtTime(
+          0.07,
+          synthAudioCtxRef.current.currentTime + 0.08,
+        );
+        gain.gain.exponentialRampToValueAtTime(
+          0.0001,
+          synthAudioCtxRef.current.currentTime + 1.2,
+        );
 
         osc.connect(gain);
         gain.connect(synthAudioCtxRef.current.destination);
@@ -86,7 +111,9 @@ export default function MusicPlayer({ src = "/music.mp3" }) {
 
         // Nếu file MP3 không tồn tại (404) -> chuyển sang synth
         audioRef.current.onerror = () => {
-          console.log("Không tìm thấy file MP3, chuyển sang chuông gió synth...");
+          console.log(
+            "Không tìm thấy file MP3, chuyển sang chuông gió synth...",
+          );
           startSynthFallback();
         };
       }
@@ -139,7 +166,9 @@ export default function MusicPlayer({ src = "/music.mp3" }) {
     };
 
     window.addEventListener("click", handleFirstInteraction, { once: true });
-    window.addEventListener("touchstart", handleFirstInteraction, { once: true });
+    window.addEventListener("touchstart", handleFirstInteraction, {
+      once: true,
+    });
     window.addEventListener("scroll", handleFirstInteraction, { once: true });
 
     return () => {
@@ -202,7 +231,7 @@ export default function MusicPlayer({ src = "/music.mp3" }) {
             initial={{ opacity: 0, x: 8, scale: 0.85 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: 8, scale: 0.85 }}
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 border border-[#ff2a75]/35 shadow-md backdrop-blur-md"
+            className="flex items-center gap-1.5 !px-2.5 !py-1 rounded-full bg-white/90 border border-[#ff2a75]/35 shadow-md backdrop-blur-md"
           >
             <div className="flex items-end gap-[2px] h-3">
               {[0.6, 1.2, 0.5, 1.0].map((dur, i) => (

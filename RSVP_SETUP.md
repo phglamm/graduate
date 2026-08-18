@@ -12,6 +12,7 @@
    - C1: `Tên khách`
    - D1: `Trạng thái`
    - E1: `IP`
+   - F1: `Lời chúc`
 
 ## 2. Tạo Apps Script
 1. Trên thanh menu của Google Sheets, chọn **Tiện ích mở rộng (Extensions)** > **Apps Script**.
@@ -29,6 +30,7 @@ function doPost(e) {
     const token = data.token;
     const name = data.name;
     const status = data.status; // 'Tham dự' hoặc 'Không tham dự'
+    const wishes = data.wishes || ''; // Lời chúc
     const ip = "N/A"; // Không lấy được IP trực tiếp từ Apps Script một cách dễ dàng
     
     // Tìm kiếm xem token/name đã tồn tại chưa (để update nếu họ đổi ý)
@@ -49,9 +51,10 @@ function doPost(e) {
       sheet.getRange(rowIndex, 1).setValue(timestamp);
       sheet.getRange(rowIndex, 3).setValue(name);
       sheet.getRange(rowIndex, 4).setValue(status);
+      sheet.getRange(rowIndex, 6).setValue(wishes);
     } else {
       // Thêm record mới
-      sheet.appendRow([timestamp, token, name, status, ip]);
+      sheet.appendRow([timestamp, token, name, status, ip, wishes]);
     }
     
     return ContentService.createTextOutput(JSON.stringify({ 'status': 'success' }))
@@ -75,7 +78,8 @@ function doGet(e) {
         timestamp: values[i][0],
         token: values[i][1],
         name: values[i][2],
-        status: values[i][3]
+        status: values[i][3],
+        wishes: values[i][5] || ''
       });
     }
     

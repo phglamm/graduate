@@ -45,14 +45,14 @@ import "./index.css";
 const CONFIG = {
   graduateName: "Trịnh Thị Mỹ Vy",
   major: "Logistics & Quản lý Chuỗi cung ứng",
-  degree: "Cử nhân",
   university: "Trường Đại học Kinh Tế - Tài Chính TP.HCM (UEF)",
   ceremonyDate: new Date(2026, 7, 27, 13, 0, 0), // 27/08/2026 lúc 13:00
-  ceremonyTime: "13:00 (1 giờ chiều)",
+  ceremonyTime: "16:00 - 17:00 (4 giờ đến 5 giờ 30 chiều)",
   ceremonyDayText: "Thứ Năm, 27 tháng 8 năm 2026",
-  venue: "Hội trường lớn",
+  venue: "Nhà hát Hoà Bình",
   venueSub: "Trường ĐH Kinh Tế - Tài Chính TP.HCM",
-  venueAddress: "141 - 145 Điện Biên Phủ, P.15, Q.Bình Thạnh, TP.HCM",
+  venueAddress:
+    "Nhà hát Hòa Bình, 240 3 Tháng 2, Hòa Hưng, Hồ Chí Minh, Việt Nam",
   photoUrl: "/portrait.png",
   defaultGuestName: "Quý khách",
   GOOGLE_SCRIPT_URL: import.meta.env.VITE_GOOGLE_SCRIPT_URL,
@@ -284,7 +284,7 @@ function PhotoCarousel() {
       </div>
 
       {/* Dải chấm tròn chỉ vị trí ảnh */}
-      <div className="flex justify-center items-center gap-1.5 py-3">
+      <div className="flex justify-center items-center gap-1.5 !py-3">
         {PHOTOS.map((_, i) => (
           <button
             key={i}
@@ -390,7 +390,7 @@ function MiniCalendar({ date }) {
         </span>
       </div>
 
-      <div className="calendar-grid-row mb-1.5">
+      <div className="calendar-grid-row !mb-1.5">
         {labels.map((l, i) => (
           <div
             key={l}
@@ -424,7 +424,7 @@ function MiniCalendar({ date }) {
 
       <div className="calendar-footer-note flex items-center justify-center gap-1.5">
         <Sparkles size={13} color="#ff2a75" />
-        <span>Ngày 27/08 — Lễ trao bằng tốt nghiệp cử nhân</span>
+        <span>Ngày 27/08/2026 — Lễ trao bằng tốt nghiệp Tân Cử nhân</span>
       </div>
     </div>
   );
@@ -566,6 +566,7 @@ function RSVPSection({ guestName }) {
     guestName === CONFIG.defaultGuestName ? "" : guestName,
   );
   const [status, setStatus] = useState(null);
+  const [wishes, setWishes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [attendees, setAttendees] = useState([]);
@@ -613,11 +614,21 @@ function RSVPSection({ guestName }) {
         method: "POST",
         mode: "no-cors",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: generateToken(name), name, status }),
+        body: JSON.stringify({
+          token: generateToken(name),
+          name,
+          status,
+          wishes: wishes.trim(),
+        }),
       });
       setAttendees([
         ...attendees,
-        { name: name.trim(), status, timestamp: new Date().toISOString() },
+        {
+          name: name.trim(),
+          status,
+          wishes: wishes.trim(),
+          timestamp: new Date().toISOString(),
+        },
       ]);
       setSubmitted(true);
       firePrincessConfetti();
@@ -632,19 +643,19 @@ function RSVPSection({ guestName }) {
     return (
       <section className="art-section">
         <Reveal>
-          <div className="guest-invitation-card py-8">
+          <div className="guest-invitation-card !py-8">
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", bounce: 0.55 }}
-              className="w-14 h-14 rounded-full bg-[#fff0f6] border-2 border-[#ff2a75] flex items-center justify-center mx-auto mb-3 text-[#ff2a75] shadow-md"
+              className="w-14 h-14 rounded-full bg-[#fff0f6] border-2 border-[#ff2a75] !flex !items-center !justify-center !mx-auto !!mb-3 text-[#ff2a75] shadow-md"
             >
               <CheckCircle2 size={30} strokeWidth={2.4} />
             </motion.div>
-            <h3 className="font-extrabold text-xl text-[#e01058] mb-1">
+            <h3 className="font-extrabold text-xl text-[#e01058] !!mb-1">
               Đã Nhận Phản Hồi!
             </h3>
-            <p className="text-xs text-[#521d37] font-medium max-w-[280px] mx-auto leading-relaxed">
+            <p className="text-xs text-[#521d37] font-medium max-w-[280px] !mx-auto leading-relaxed">
               Cảm ơn <strong>{name || guestName}</strong> đã gửi phản hồi. Rất
               mong được đón tiếp bạn trong ngày lễ tốt nghiệp!
             </p>
@@ -662,8 +673,8 @@ function RSVPSection({ guestName }) {
       <Reveal delay={0.06}>
         <StarBorder color="#ff2a75" speed="4.5s">
           {/* Ô nhập tên */}
-          <div className="mb-4">
-            <label className="block text-[10px] font-extrabold tracking-wider uppercase text-[#b86f94] mb-1.5">
+          <div className="!mb-4">
+            <label className="block text-[10px] font-extrabold tracking-wider uppercase text-[#b86f94] !mb-1.5">
               Tên của bạn
             </label>
             <input
@@ -680,8 +691,22 @@ function RSVPSection({ guestName }) {
             )}
           </div>
 
+          {/* Ô ghi lời chúc */}
+          <div className="!mb-4">
+            <label className="block text-[10px] font-extrabold tracking-wider uppercase text-[#b86f94] !!mb-1.5">
+              Lời chúc đến tân cử nhân
+            </label>
+            <textarea
+              value={wishes}
+              onChange={(e) => setWishes(e.target.value)}
+              placeholder="Gửi lời chúc mừng tốt nghiệp..."
+              className="modern-input rsvp-wishes-textarea"
+              rows={3}
+            />
+          </div>
+
           {/* Nút chọn tham dự */}
-          <div className="flex gap-2.5 mb-5">
+          <div className="flex gap-2.5 !mb-5">
             <button
               onClick={() => setStatus("Tham dự")}
               className={`rsvp-option-btn ${
@@ -689,7 +714,7 @@ function RSVPSection({ guestName }) {
               }`}
             >
               <CheckCircle2 size={16} strokeWidth={2.2} />
-              <span>Sẽ tham dự</span>
+              <span>Chắc chắn sẽ tham dự</span>
             </button>
             <button
               onClick={() => setStatus("Không tham dự")}
@@ -700,7 +725,7 @@ function RSVPSection({ guestName }) {
               }`}
             >
               <XCircle size={16} strokeWidth={2.2} />
-              <span>Bận, không đến</span>
+              <span>Tiếc quá, bận mất rùiii</span>
             </button>
           </div>
 
@@ -776,9 +801,9 @@ function AdminPage() {
           </button>
         </div>
 
-        <div className="admin-card flex items-center justify-between mb-5 p-5">
+        <div className="admin-card flex items-center justify-between !mb-5 p-5">
           <div>
-            <p className="text-[10px] font-extrabold uppercase tracking-wider text-[#ff82b6] mb-1">
+            <p className="text-[10px] font-extrabold uppercase tracking-wider text-[#ff82b6] !mb-1">
               Tổng số phản hồi
             </p>
             <p className="font-extrabold text-4xl text-white">{total}</p>
@@ -794,19 +819,19 @@ function AdminPage() {
           <div className="pie-chart" style={{ "--yes-pct": `${yesPct}%` }} />
         </div>
 
-        <h2 className="flex items-center gap-2 font-extrabold text-lg text-[#ff82b6] mb-3">
+        <h2 className="flex items-center gap-2 font-extrabold text-lg text-[#ff82b6] !mb-3">
           <Users size={16} color="#ff82b6" strokeWidth={2} /> Danh sách khách
           xác nhận
         </h2>
 
         {loading ? (
-          <div className="flex justify-center py-10">
+          <div className="flex justify-center !py-10">
             <Loader2 size={24} className="animate-spin text-[#ff82b6]" />
           </div>
         ) : error ? (
           <div className="error-box">{error}</div>
         ) : data.length === 0 ? (
-          <p className="text-center py-10 text-[#b86f94] text-xs font-semibold">
+          <p className="text-center !py-10 text-[#b86f94] text-xs font-semibold">
             Chưa có khách nào gửi phản hồi.
           </p>
         ) : (
@@ -860,7 +885,6 @@ function EnvelopeCover({ onOpen, guestName }) {
           <Mail size={32} strokeWidth={0} fill="#8b1d3b" />
         </motion.div>
 
-        {/* ✦ TRÂN TRỌNG KÍNH MỜI ✦ */}
         <div className="envelope-invite-heading">
           <span className="text-[#d4af37]">✦</span>
           <span>TRÂN TRỌNG KÍNH MỜI</span>
@@ -869,7 +893,7 @@ function EnvelopeCover({ onOpen, guestName }) {
 
         {/* Tên khách mời (nếu có từ tham số link) */}
         {guestName && guestName !== CONFIG.defaultGuestName && (
-          <p className="text-[12.5px] font-extrabold text-[#8b1d3b] tracking-wider uppercase mb-1">
+          <p className="text-[12.5px] font-extrabold text-[#8b1d3b] tracking-wider uppercase !mb-1">
             {guestName}
           </p>
         )}
@@ -893,7 +917,11 @@ function EnvelopeCover({ onOpen, guestName }) {
         </div>
 
         {/* Dòng chú thích: chạm để mở thiệp & bật nhạc nền */}
-        <p className="envelope-sub-hint">chạm để mở thiệp &amp; bật nhạc nền</p>
+        <p className="envelope-sub-hint">
+          {" "}
+          chạm vào đây để mở thiệp nhaa
+          <Heart size={16} color="#ff2a75" fill="#ff2a75" strokeWidth={0} />
+        </p>
       </div>
     </motion.div>
   );
@@ -935,7 +963,7 @@ export default function App() {
     {
       icon: BookOpen,
       label: "Chuyên ngành",
-      value: `${CONFIG.degree} — ${CONFIG.major}`,
+      value: `${CONFIG.major}`,
     },
   ];
 
@@ -1011,7 +1039,7 @@ export default function App() {
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.55, delay: 0.25 }}
-                className="flex flex-col items-center px-1"
+                className="flex flex-col items-center !px-1"
               >
                 <BlurText
                   text={CONFIG.graduateName}
@@ -1020,9 +1048,7 @@ export default function App() {
                   animateBy="words"
                   direction="top"
                 />
-                <p className="hero-degree-sub">
-                  {CONFIG.degree} · {CONFIG.major}
-                </p>
+                <p className="hero-degree-sub">Tân Cử nhân · {CONFIG.major}</p>
                 <p className="hero-univ-title">{CONFIG.university}</p>
               </motion.div>
             </section>
@@ -1036,11 +1062,11 @@ export default function App() {
                   borderColor="rgba(255, 96, 159, 0.45)"
                 >
                   <ShinyText
-                    text="TRÂN TRỌNG KÍNH MỜI"
+                    text="THƯƠNG MỜI"
                     speed={3.5}
                     className="guest-kính-mời"
                   />
-                  <div className="flex justify-center my-1">
+                  <div className="flex justify-center !my-1">
                     <BlurText
                       text={guestName}
                       delay={100}
@@ -1050,8 +1076,9 @@ export default function App() {
                     />
                   </div>
                   <p className="guest-body-text">
-                    Đến tham dự buổi Lễ tốt nghiệp và chia vui cùng Mỹ Vy trong ngày
-                    trọng đại ghi dấu cột mốc thanh xuân rực rỡ!
+                    Hy vọng người thương sẽ có mặt để cùng Mỹ Vy khép lại hành
+                    trình đại học bằng những nụ cười, những cái ôm và thật nhiều
+                    kỷ niệm đẹp nha.
                   </p>
                 </SpotlightCard>
               </Reveal>
@@ -1134,86 +1161,88 @@ export default function App() {
                 </SpotlightCard>
               </Reveal>
 
-          {/* Nút mở chỉ đường Google Maps */}
-          <Reveal delay={0.1}>
-            <a
-              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                CONFIG.venueAddress,
-              )}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="google-map-btn"
-            >
-              <div className="info-icon-badge !w-9 !h-9 !mt-0">
-                <Compass size={17} strokeWidth={2.2} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-[10px] font-extrabold tracking-wider uppercase text-[#ff2a75]">
-                  Chỉ đường Google Maps
-                </p>
-                <p className="text-xs font-bold text-[#2e081c] truncate">
-                  {CONFIG.venueAddress}
-                </p>
-              </div>
-              <ExternalLink
-                size={15}
-                strokeWidth={2.2}
-                className="text-[#ff2a75] shrink-0 opacity-75"
-              />
-            </a>
-          </Reveal>
-        </section>
-
-        <Divider />
-
-        {/* ── PHẦN 6: FORM XÁC NHẬN THAM DỰ (RSVP) ─────────────── */}
-        <RSVPSection guestName={guestName} />
-
-        {/* ── PHẦN 7: CHÂN THIỆP CẢM ƠN ────────────────────────── */}
-        <footer className="invitation-footer">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="flex justify-center gap-1.5 mb-2.5">
-              {[0, 1, 2].map((i) => (
-                <motion.div
-                  key={i}
-                  animate={{ scale: [1, 1.3, 1] }}
-                  transition={{
-                    duration: 2,
-                    delay: i * 0.3,
-                    repeat: Infinity,
-                  }}
+              {/* Nút mở chỉ đường Google Maps */}
+              <Reveal delay={0.1}>
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                    CONFIG.venueAddress,
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="google-map-btn"
                 >
-                  <Heart
-                    size={14}
-                    fill="#ff2a75"
-                    color="#ff2a75"
-                    strokeWidth={0}
+                  <div className="info-icon-badge !w-9 !h-9 !mt-0">
+                    <Compass size={17} strokeWidth={2.2} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[10px] font-extrabold tracking-wider uppercase text-[#ff2a75]">
+                      Chỉ đường Google Maps
+                    </p>
+                    <p className="text-xs font-bold text-[#2e081c] truncate">
+                      {CONFIG.venueAddress}
+                    </p>
+                  </div>
+                  <ExternalLink
+                    size={15}
+                    strokeWidth={2.2}
+                    className="text-[#ff2a75] shrink-0 opacity-75"
                   />
-                </motion.div>
-              ))}
-            </div>
-            <p className="footer-name-title">{CONFIG.graduateName}</p>
-            <p className="footer-school-sub">Khóa 2026 · {CONFIG.university}</p>
-          </motion.div>
-        </footer>
+                </a>
+              </Reveal>
+            </section>
 
-          {/* Nút nổi bắn pháo hoa góc màn hình */}
-          <button
-            onClick={firePrincessConfetti}
-            className="floating-celebrate-btn"
-            aria-label="Bắn pháo hoa chúc mừng"
-          >
-            <Sparkles size={17} />
-            <span>Chúc mừng</span>
-          </button>
-        </motion.main>
-      )}
-    </AnimatePresence>
-  </div>
-);
+            <Divider />
+
+            {/* ── PHẦN 6: FORM XÁC NHẬN THAM DỰ (RSVP) ─────────────── */}
+            <RSVPSection guestName={guestName} />
+
+            {/* ── PHẦN 7: CHÂN THIỆP CẢM ƠN ────────────────────────── */}
+            <footer className="invitation-footer">
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+              >
+                <div className="flex justify-center gap-1.5 !mb-2.5">
+                  {[0, 1, 2].map((i) => (
+                    <motion.div
+                      key={i}
+                      animate={{ scale: [1, 1.3, 1] }}
+                      transition={{
+                        duration: 2,
+                        delay: i * 0.3,
+                        repeat: Infinity,
+                      }}
+                    >
+                      <Heart
+                        size={14}
+                        fill="#ff2a75"
+                        color="#ff2a75"
+                        strokeWidth={0}
+                      />
+                    </motion.div>
+                  ))}
+                </div>
+                <p className="footer-name-title">{CONFIG.graduateName}</p>
+                <p className="footer-school-sub">
+                  Khóa 2022 · {CONFIG.university}
+                </p>
+              </motion.div>
+            </footer>
+
+            {/* Nút nổi bắn pháo hoa góc màn hình */}
+            <button
+              onClick={firePrincessConfetti}
+              className="floating-celebrate-btn"
+              aria-label="Bắn pháo hoa chúc mừng"
+            >
+              <Sparkles size={17} />
+              <span>Chúc mừng</span>
+            </button>
+          </motion.main>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 }
